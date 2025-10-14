@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidden Champions - Deutschland</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .main-card {
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        h1 {
+            color: #000;
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.3;
+            margin-bottom: 60px;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        #changingText {
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 18px 45px;
+            border-radius: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .main-card {
+                padding: 40px 30px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .cta-button {
+                font-size: 1rem;
+                padding: 15px 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-card">
+            <h1>
+                <span id="changingText">Du denkst Deutschland geht es schlecht?</span><br>
+                Kennst du diese Weltmarktführer überhaupt?
+            </h1>
+            
+            <a href="home.html" class="cta-button">
+                Jetzt entdecken
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const texts = [
+            "Du denkst Deutschland geht es schlecht?",
+            "Du denkst keiner kennt deutsche Firmen im Ausland?",
+            "Apple, Microsoft, Google?",
+            "Wer ist der reichste Deutsche?",
+            "Kennst du die Firma Würth, über 80.000 Mitarbeiter weltweit? Nicht!",
+        ];
+        
+        let currentIndex = 0;
+        const textElement = document.getElementById('changingText');
+        
+        function changeText() {
+            textElement.style.opacity = '0';
+            
+            setTimeout(function() {
+                currentIndex = (currentIndex + 1) % texts.length;
+                textElement.textContent = texts[currentIndex];
+                textElement.style.opacity = '1';
+            }, 500);
+        }
+        
+        setInterval(changeText, 4000);
+    </script>
+</body>
+</html>

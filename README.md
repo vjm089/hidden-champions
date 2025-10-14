@@ -1,1 +1,1 @@
-# hidden-champions
+# hidden.champion

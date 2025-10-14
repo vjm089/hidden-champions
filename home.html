@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidden Champions in Deutschland</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 3rem; 
+            font-weight: 700; 
+            margin-bottom: 10px;
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+
+        .header .subtitle {
+            color: #6c757d;
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-top: 10px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .info-box h2 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box p {
+            font-size: 1rem;
+            line-height: 1.7;
+            opacity: 0.95;
+        }
+
+        .info-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .intro-text {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #007bff;
+            margin-bottom: 50px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .market-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .markets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .market-card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #007bff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .market-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .company-logo {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-placeholder {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .market-card h3 {
+            color: #007bff;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .market-description {
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .market-stats {
+            border-top: 1px solid #e9ecef;
+            padding-top: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            color: #007bff;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hidden Champions in Deutschland</h1>
+            <p class="subtitle">Weltmarktführer im Verborgenen</p>
+        </div>
+
+        <div class="info-box">
+            <h2>Was sind Hidden Champions?</h2>
+            <p>Hidden Champions sind meist mittelständische Unternehmen, die in ihrer Nische Weltmarktführer oder zu den Top 3 weltweit gehören, dabei aber einer breiten Öffentlichkeit weitgehend unbekannt bleiben. Sie zeichnen sich durch hohe Innovationskraft, Spezialisierung und internationale Ausrichtung aus.</p>
+        </div>
+
+        <div class="intro-text">
+            Wähle aus der Liste der verfügbaren Unternehmen die Kampagne aus, die du verfolgen möchtest.
+        </div>
+
+        <div class="markets-grid" id="marketsGrid">
+            <a href="Herrenknecht AG.html" class="market-link">
+                <div class="market-card" data-name="Herrenknecht AG" data-logo="logo-herrenknecht.png">
+                    <div class="logo-container">
+                        <div class="logo-placeholder">H</div>
+                    </div>
+                    <h3>Herrenknecht AG</h3>
+                    <div class="market-description">Tunnelbohrmaschinen für Großprojekte (Mobilität, Versorgung)</div>
+                    <div class="market-stats">
+                        <div class="stat-item"><span class="stat-label">Mitarbeiter:</span> <span class="stat-value">ca. 5.000</span></div>
+                        <div class="stat-item"><span class="stat-label">Umsatz:</span> <span class="stat-value">1,3 Mrd. €</span></div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="Würth.html" class="market-link">
+                <div class="market-card" data-name="Würth-Gruppe" data-logo="logo-wuerth.png">
+                    <div class="logo-container">
+                        <div class="logo-placeholder">W</div>
+                    </div>
+                    <h3>Würth-Gruppe</h3>
+                    <div class="market-description">Handelsunternehmen, Befestigungs- & Montagematerial, Werkzeuge</div>
+                    <div class="market-stats">
+                      <div class="stat-item"><span class="stat-label">Mitarbeiter:</span> <span class="stat-value">87.000</span></div>
+                      <div class="stat-item"><span class="stat-label">Umsatz:</span> <span class="stat-value">20,4 Mrd. €</span></div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="Trumpf.html" class="market-link">
+                <div class="market-card" data-name="TRUMPF GmbH + Co. KG" data-logo="logo-trumpf.png">
+                    <div class="logo-container">
+                        <div class="logo-placeholder">T</div>
+                    </div>
+                    <h3>TRUMPF GmbH + Co. KG</h3>
+                    <div class="market-description">Maschinenbau vor allem Lasertechnik und Werkzeugmaschinen</div>
+                    <div class="market-stats">
+                        <div class="stat-item"><span class="stat-label">Mitarbeiter:</span> <span class="stat-value">18.400</span></div>
+                        <div class="stat-item"><span class="stat-label">Umsatz:</span> <span class="stat-value">5,4 Mrd. €</span></div>
+                    </div>
+                </div>
+            </a>
+            <a href="leonie.html" class="market-link">
+                <div class="market-card" data-name="Leoni AG" data-logo="logo-leoni.png">
+                    <div class="logo-container">
+                        <div class="logo-placeholder">L</div>
+                    </div>
+                    <h3>Leoni AG</h3>
+                    <div class="market-description">Kabel und Bordnetz-Systeme, v.a. für Automotive</div>
+                    <div class="market-stats">
+                        <div class="stat-item"><span class="stat-label">Mitarbeiter:</span> <span class="stat-value">ca. 95.000</span></div>
+                        <div class="stat-item"><span class="stat-label">Umsatz:</span> <span class="stat-value">5,1 Mrd. €</span></div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="celonis.html" class="market-link">
+                <div class="market-card" data-name="Celonis" data-logo="logo-celonis.png">
+                    <div class="logo-container">
+                        <div class="logo-placeholder">C</div>
+                    </div>
+                    <h3>Celonis</h3>
+                    <div class="market-description">Process Mining Software für Geschäftsprozesse</div>
+                    <div class="market-stats">
+                        <div class="stat-item"><span class="stat-label">Mitarbeiter:</span> <span class="stat-value">über 2.500</span></div>
+                        <div class="stat-item"><span class="stat-label">Umsatz:</span> <span class="stat-value">500 Mio €</span></div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="Merck KGaA.html" class="market-link">
+                <div class="market-card" data-name="Merck KGaA" data-logo="logo-merck.png">
+                    <div class="logo-container">
+                        <div class="logo-placeholder">M</div>
+                    </div>
+                    <h3>Merck KGaA</h3>
+                    <div class="market-description">Chemie & Pharma – Life Science, Healthcare, Electronics</div>
+                    <div class="market-stats">
+                        <div class="stat-item"><span class="stat-label">Mitarbeiter:</span> <span class="stat-value">64.000</span></div>
+                        <div class="stat-item"><span class="stat-label">Umsatz:</span> <span class="stat-value">21,0 Mrd. €</span></div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="Friedhelm Loh.html" class="market-link">
+                <div class="market-card" data-name="Friedhelm Loh Group" data-logo="logo-lohgroup.png">
+                    <div class="logo-container">
+                        <div class="logo-placeholder">FL</div>
+                    </div>
+                    <h3>Friedhelm Loh Group</h3>
+                    <div class="market-description">Maschinen- & Anlagenbau, Informationstechnik</div>
+                    <div class="market-stats">
+                        <div class="stat-item"><span class="stat-label">Mitarbeiter:</span> <span class="stat-value">12.000</span></div>
+                        <div class="stat-item"><span class="stat-label">Umsatz:</span> <span class="stat-value">ca. 4 Mrd. €</span></div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="symrise.html" class="market-link">
+                <div class="market-card" data-name="Symrise AG" data-logo="logo-symrise.png">
+                    <div class="logo-container">
+                        <div class="logo-placeholder">S</div>
+                    </div>
+                    <h3>Symrise AG</h3>
+                    <div class="market-description">Duft- und Geschmackstoffe, kosmetische Inhaltsstoffe</div>
+                    <div class="market-stats">
+                        <div class="stat-item"><span class="stat-label">Mitarbeiter:</span> <span class="stat-value">13.000</span></div>
+                        <div class="stat-item"><span class="stat-label">Umsatz:</span> <span class="stat-value">5 Mrd. €</span></div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="phoenix.html" class="market-link">
+                <div class="market-card" data-name="Phoenix Contact GmbH & Co. KG" data-logo="logo-zeiss.jpg">
+                    <div class="logo-container">
+                        <div class="logo-placeholder">PC</div>
+                    </div>
+                    <h3>Carl Zeiss AG</h3>
+                    <div class="market-description">Optische und optoelektronische Produkte</div>
+                    <div class="market-stats">
+                        <div class="stat-item"><span class="stat-label">Mitarbeiter:</span> <span class="stat-value">46.000</span></div>
+                        <div class="stat-item"><span class="stat-label">Umsatz:</span> <span class="stat-value">10,9 Mrd. €</span></div>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <script>
+
+        const logoPaths = [
+            '',                   
+            'images/',           
+            './images/',          
+            '../images/',         
+            'logos/',             
+        ];
+
+    
+        document.querySelectorAll('.market-card').forEach(card => {
+            const logoName = card.dataset.logo;
+            const logoContainer = card.querySelector('.logo-container');
+            const placeholder = card.querySelector('.logo-placeholder');
+            
+            if (logoName) {
+                tryLoadLogo(logoName, logoContainer, placeholder, 0);
+            }
+        });
+
+        function tryLoadLogo(logoName, container, placeholder, pathIndex) {
+            if (pathIndex >= logoPaths.length) {
+                return;
+            }
+
+            const img = document.createElement('img');
+            img.className = 'company-logo';
+            img.alt = 'Company Logo';
+            
+            img.onload = function() {
+                placeholder.style.display = 'none';
+                container.appendChild(img);
+            };
+            
+            img.onerror = function() {
+                // Nächsten Pfad versuchen
+                tryLoadLogo(logoName, container, placeholder, pathIndex + 1);
+            };
+            
+            img.src = logoPaths[pathIndex] + logoName;
+        }
+    </script>
+</body>
+</html>
