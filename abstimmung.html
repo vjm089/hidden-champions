@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innovations-Umfrage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header .subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #0056b3;
+        }
+
+        .survey-card {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .question-block {
+            margin-bottom: 40px;
+        }
+
+        .question-block h2 {
+            color: #007bff;
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .slider-container {
+            padding: 20px 0;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #dc3545, #ffc107, #28a745);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #007bff;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #007bff;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .slider-value {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #007bff;
+        }
+
+        .scale-markers {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            padding: 0 2px;
+        }
+
+        .scale-markers span {
+            font-size: 0.75rem;
+            color: #adb5bd;
+            width: 20px;
+            text-align: center;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            border: 1px solid #c3e6cb;
+            display: none;
+        }
+
+        .results-card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #28a745;
+        }
+
+        .results-card h2 {
+            color: #28a745;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .result-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #007bff;
+        }
+
+        .result-count {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .admin-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .admin-link a {
+            color: #6c757d;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .admin-link a:hover {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="home2.html" class="back-link">← Zurück zur Übersicht</a>
+        
+        <div class="header">
+            <h1>Innovations-Umfrage</h1>
+            <p class="subtitle">Deine Meinung zählt!</p>
+        </div>
+
+        <div class="survey-card">
+            <form id="surveyForm">
+                <div class="question-block">
+                    <h2>Wie innovativ bist du?</h2>
+                    <div class="slider-container">
+                        <div class="slider-wrapper">
+                            <input type="range" min="0" max="10" value="5" class="slider" id="personalInnovation">
+                            <div class="scale-markers">
+                                <span>0</span>
+                                <span>1</span>
+                                <span>2</span>
+                                <span>3</span>
+                                <span>4</span>
+                                <span>5</span>
+                                <span>6</span>
+                                <span>7</span>
+                                <span>8</span>
+                                <span>9</span>
+                                <span>10</span>
+                            </div>
+                            <div class="slider-labels">
+                                <span>Gar nicht innovativ</span>
+                                <span>Sehr innovativ</span>
+                            </div>
+                        </div>
+                        <div class="slider-value" id="personalValue">5</div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h2>Wie innovativ denkst du ist Deutschland?</h2>
+                    <div class="slider-container">
+                        <div class="slider-wrapper">
+                            <input type="range" min="0" max="10" value="5" class="slider" id="germanyInnovation">
+                            <div class="scale-markers">
+                                <span>0</span>
+                                <span>1</span>
+                                <span>2</span>
+                                <span>3</span>
+                                <span>4</span>
+                                <span>5</span>
+                                <span>6</span>
+                                <span>7</span>
+                                <span>8</span>
+                                <span>9</span>
+                                <span>10</span>
+                            </div>
+                            <div class="slider-labels">
+                                <span>Gar nicht innovativ</span>
+                                <span>Sehr innovativ</span>
+                            </div>
+                        </div>
+                        <div class="slider-value" id="germanyValue">5</div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Abstimmung abschicken</button>
+            </form>
+
+            <div class="success-message" id="successMessage">
+                ✓ Vielen Dank für deine Teilnahme! Deine Stimme wurde erfasst.
+            </div>
+        </div>
+
+        <div class="results-card">
+            <h2>Aktuelle Durchschnittswerte</h2>
+            <div class="result-item">
+                <div class="result-label">Persönliche Innovativität</div>
+                <div class="result-value" id="avgPersonal">-</div>
+                <div class="result-count" id="countPersonal">Noch keine Abstimmungen</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">Innovativität Deutschlands</div>
+                <div class="result-value" id="avgGermany">-</div>
+                <div class="result-count" id="countGermany">Noch keine Abstimmungen</div>
+            </div>
+        </div>
+
+        <div class="admin-link">
+            <a href="#" id="downloadData">📊 Daten als JSON herunterladen</a>
+        </div>
+    </div>
+
+    <script>
+        const personalSlider = document.getElementById('personalInnovation');
+        const germanySlider = document.getElementById('germanyInnovation');
+        const personalValue = document.getElementById('personalValue');
+        const germanyValue = document.getElementById('germanyValue');
+        const form = document.getElementById('surveyForm');
+        const successMessage = document.getElementById('successMessage');
+
+        let votes = {
+            personal: [],
+            germany: []
+        };
+
+        // Werte aus dem Speicher laden
+        function loadVotes() {
+            const stored = sessionStorage.getItem('innovationVotes');
+            if (stored) {
+                votes = JSON.parse(stored);
+                updateResults();
+            }
+        }
+
+        // Werte speichern
+        function saveVotes() {
+            sessionStorage.setItem('innovationVotes', JSON.stringify(votes));
+        }
+
+        // Slider-Werte aktualisieren
+        personalSlider.addEventListener('input', (e) => {
+            personalValue.textContent = e.target.value;
+        });
+
+        germanySlider.addEventListener('input', (e) => {
+            germanyValue.textContent = e.target.value;
+        });
+
+        // Formular absenden
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const personalScore = parseInt(personalSlider.value);
+            const germanyScore = parseInt(germanySlider.value);
+
+            votes.personal.push({
+                value: personalScore,
+                timestamp: new Date().toISOString()
+            });
+
+            votes.germany.push({
+                value: germanyScore,
+                timestamp: new Date().toISOString()
+            });
+
+            saveVotes();
+            updateResults();
+
+            // Erfolgsmeldeung anzeigen
+            successMessage.style.display = 'block';
+            form.style.display = 'none';
+
+            // Nach 3 Sekunden zurücksetzen
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+                form.style.display = 'block';
+                personalSlider.value = 5;
+                germanySlider.value = 5;
+                personalValue.textContent = 5;
+                germanyValue.textContent = 5;
+            }, 3000);
+        });
+
+        // Ergebnisse aktualisieren
+        function updateResults() {
+            if (votes.personal.length > 0) {
+                const avgPersonal = (votes.personal.reduce((sum, vote) => sum + vote.value, 0) / votes.personal.length).toFixed(1);
+                document.getElementById('avgPersonal').textContent = avgPersonal;
+                document.getElementById('countPersonal').textContent = `${votes.personal.length} Abstimmung${votes.personal.length !== 1 ? 'en' : ''}`;
+            }
+
+            if (votes.germany.length > 0) {
+                const avgGermany = (votes.germany.reduce((sum, vote) => sum + vote.value, 0) / votes.germany.length).toFixed(1);
+                document.getElementById('avgGermany').textContent = avgGermany;
+                document.getElementById('countGermany').textContent = `${votes.germany.length} Abstimmung${votes.germany.length !== 1 ? 'en' : ''}`;
+            }
+        }
+
+        // Daten herunterladen
+        document.getElementById('downloadData').addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            const dataStr = JSON.stringify(votes, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'innovation-umfrage-daten.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // Beim Laden die gespeicherten Daten laden
+        loadVotes();
+    </script>
+</body>
+</html>
