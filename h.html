@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Für dich 💌</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #fdf0f0;
+    background-image: 
+      radial-gradient(circle at 20% 50%, #ffe0e8 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, #ffd6e7 0%, transparent 50%),
+      radial-gradient(circle at 60% 80%, #ffe8f0 0%, transparent 40%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    overflow-x: hidden;
+    padding: 20px;
+  }
+
+  .hearts-bg { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  .heart-float { position: absolute; bottom: -50px; font-size: 1.5rem; animation: floatUp linear infinite; opacity: 0.15; }
+  @keyframes floatUp { to { transform: translateY(-110vh) rotate(20deg); opacity: 0; } }
+
+  .step { display: none; flex-direction: column; align-items: center; z-index: 1; }
+  .step.active { display: flex; }
+
+  /* ENVELOPE */
+  #step-envelope { gap: 24px; }
+  .envelope-wrap { cursor: pointer; perspective: 800px; width: 320px; height: 220px; }
+  .envelope { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(.4,2,.6,1); }
+  .envelope-wrap:hover .envelope { transform: scale(1.04); }
+  .env-body { position: absolute; inset: 0; background: linear-gradient(145deg, #f5c6d0, #e8a0b4); border-radius: 8px; box-shadow: 0 20px 60px rgba(200,80,120,.25), 0 4px 12px rgba(0,0,0,.08); }
+  .env-body::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 0; border-left: 160px solid transparent; border-right: 160px solid transparent; border-bottom: 130px solid #e090a8; }
+  .env-left, .env-right { position: absolute; top: 0; bottom: 0; width: 0; height: 0; border-top: 110px solid transparent; border-bottom: 110px solid transparent; }
+  .env-left { left: 0; border-left: 145px solid #e8afc0; }
+  .env-right { right: 0; border-right: 145px solid #dda0b8; }
+  .env-flap { position: absolute; top: 0; left: 0; right: 0; height: 0; width: 0; border-left: 160px solid transparent; border-right: 160px solid transparent; border-top: 130px solid #d4849e; transform-origin: top center; transition: transform 0.6s ease; z-index: 2; }
+  .envelope-wrap.opened .env-flap { transform: rotateX(180deg); }
+  .env-seal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 44px; height: 44px; background: radial-gradient(circle, #c0435e, #8b1a35); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 2px 8px rgba(0,0,0,.3); z-index: 3; transition: opacity 0.3s; }
+  .envelope-wrap.opened .env-seal { opacity: 0; }
+  .env-letter { position: absolute; bottom: 30px; left: 20px; right: 20px; height: 0; background: #fff8f0; border-radius: 4px; overflow: hidden; transition: height 0.6s 0.3s ease, bottom 0.6s 0.3s ease; z-index: 1; box-shadow: 0 -4px 12px rgba(0,0,0,.1); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #c05070; }
+  .envelope-wrap.opened .env-letter { height: 100px; bottom: 80px; }
+  .envelope-hint { font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-weight: 300; font-size: 1.1rem; letter-spacing: 0.02em; color: #b05070; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:.7} 50%{opacity:1} }
+
+  /* LETTER */
+  #step-letter { animation: fadeIn 0.8s ease; gap: 20px; max-width: 420px; width: 100%; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+  .letter-paper { background: #fffdf8; border-radius: 4px; padding: 40px 36px; box-shadow: 0 8px 40px rgba(180,80,100,.15), 4px 4px 0 #f0d8e0; position: relative; width: 100%; }
+  .letter-paper::before { content: ''; position: absolute; top: 0; left: 40px; width: 1px; height: 100%; background: #f0c0cc; opacity: .5; }
+  .letter-lines { background-image: repeating-linear-gradient(transparent, transparent 27px, #f0e8ec 27px, #f0e8ec 28px); padding: 8px 0; }
+  .letter-heading { font-family: 'Playfair Display', Georgia, serif; font-size: 1.7rem; font-weight: 600; letter-spacing: -0.01em; color: #c05070; margin-bottom: 16px; }
+  .letter-body { font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 1.05rem; font-weight: 300; letter-spacing: 0.01em; color: #704050; line-height: 1.85; }
+
+  /* SCRATCH */
+  #step-scratch { animation: fadeIn 0.8s ease; gap: 20px; align-items: center; }
+  .scratch-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.5rem; font-weight: 400; letter-spacing: -0.01em; color: #b04060; text-align: center; }
+  .scratch-wrap { position: relative; width: 280px; height: 100px; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 30px rgba(180,80,100,.2); cursor: crosshair; }
+  .scratch-reveal { position: absolute; inset: 0; background: linear-gradient(135deg, #fff0f5, #ffe0ea); display: flex; align-items: center; justify-content: center; font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif; font-size: 1.2rem; font-weight: 500; letter-spacing: 0.02em; color: #b03060; }
+  #scratchCanvas { position: absolute; inset: 0; cursor: crosshair; touch-action: none; }
+  .scratch-hint { font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 0.95rem; font-weight: 300; letter-spacing: 0.02em; color: #c08090; text-align: center; }
+
+  /* BUTTON */
+  .btn-primary { font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 1.05rem; font-weight: 500; letter-spacing: 0.02em; background: linear-gradient(135deg, #e8607a, #c0304e); color: white; border: none; padding: 14px 36px; border-radius: 50px; cursor: pointer; box-shadow: 0 6px 20px rgba(180,60,80,.35); transition: transform .2s, box-shadow .2s; display: none; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(180,60,80,.4); }
+  .btn-primary.visible { display: block; animation: fadeIn .5s ease; }
+
+  /* DICE */
+  #step-dice { animation: fadeIn 0.8s ease; gap: 24px; align-items: center; }
+  .dice-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.5rem; font-weight: 400; letter-spacing: -0.01em; color: #b04060; text-align: center; }
+  .dice { width: 110px; height: 110px; background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(180,80,100,.25), inset 0 2px 4px rgba(255,255,255,.8); display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); padding: 14px; gap: 6px; cursor: pointer; transition: transform .15s; }
+  .dice:hover { transform: scale(1.05); }
+  .dice.rolling { animation: roll 0.6s ease; }
+  @keyframes roll { 0%{transform:rotate(0) scale(1)} 25%{transform:rotate(-15deg) scale(1.1)} 50%{transform:rotate(10deg) scale(.95)} 75%{transform:rotate(-5deg) scale(1.05)} 100%{transform:rotate(0) scale(1)} }
+  .dot { width: 100%; height: 100%; background: #d0304e; border-radius: 50%; display: none; }
+  .dice-msg { font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 1rem; font-weight: 300; letter-spacing: 0.01em; color: #c08090; text-align: center; min-height: 30px; }
+
+  /* QUIZ */
+  .quiz-step { animation: fadeIn 0.8s ease; gap: 20px; align-items: center; max-width: 400px; width: 100%; }
+  .quiz-card { background: #fffdf8; border-radius: 20px; padding: 36px 32px; box-shadow: 0 8px 40px rgba(180,80,100,.15), 4px 4px 0 #f0d8e0; width: 100%; display: flex; flex-direction: column; gap: 18px; align-items: center; }
+  .quiz-badge { background: linear-gradient(135deg, #f5c6d0, #e8a0b4); color: #8b1a35; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 14px; border-radius: 50px; }
+  .quiz-question { font-family: 'Playfair Display', Georgia, serif; font-size: 1.35rem; font-weight: 400; color: #7a2040; text-align: center; line-height: 1.4; }
+  .quiz-input { font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 1rem; font-weight: 400; color: #5a2035; background: #fff5f7; border: 2px solid #f0c0cc; border-radius: 12px; padding: 12px 18px; width: 100%; outline: none; text-align: center; transition: border-color .2s, box-shadow .2s; letter-spacing: 0.02em; }
+  .quiz-input:focus { border-color: #e8607a; box-shadow: 0 0 0 4px rgba(232,96,122,.12); }
+  .quiz-input.error { border-color: #e83030; animation: shake .35s ease; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+  .quiz-error { font-size: 0.88rem; color: #c03050; font-weight: 400; min-height: 22px; text-align: center; }
+
+  /* FINAL */
+  #step-final { animation: fadeIn 1s ease; gap: 16px; align-items: center; text-align: center; }
+  .final-heart { font-size: 5rem; animation: heartbeat 1.2s ease-in-out infinite; }
+  @keyframes heartbeat { 0%,100%{transform:scale(1)} 14%{transform:scale(1.2)} 28%{transform:scale(1)} 42%{transform:scale(1.15)} 70%{transform:scale(1)} }
+  .final-msg { font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 400; font-style: italic; letter-spacing: -0.01em; color: #b03060; line-height: 1.4; max-width: 380px; }
+  .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+</style>
+</head>
+<body>
+
+<div class="hearts-bg" id="heartsContainer"></div>
+
+<!-- STEP 1: Envelope -->
+<div class="step active" id="step-envelope">
+  <div class="envelope-wrap" id="envelopeWrap" onclick="openEnvelope()">
+    <div class="envelope">
+      <div class="env-body"></div>
+      <div class="env-left"></div>
+      <div class="env-right"></div>
+      <div class="env-flap"></div>
+      <div class="env-seal">💌</div>
+      <div class="env-letter">Für dich ❤️</div>
+    </div>
+  </div>
+  <p class="envelope-hint">Klick auf den Umschlag</p>
+</div>
+
+<!-- STEP 2: Letter -->
+<div class="step" id="step-letter">
+  <div class="letter-paper">
+    <div class="letter-lines">
+      <p class="letter-heading">Hi Henni,</p>
+      <p class="letter-body">
+        Ich wollte dir nur was sagen :)
+      </p>
+    </div>
+  </div>
+  <button class="btn-primary visible" onclick="goTo('step-scratch')">Los geht's →</button>
+</div>
+
+<!-- STEP 3: Scratch card -->
+<div class="step" id="step-scratch">
+  <p class="scratch-title">Rubbel das Feld frei</p>
+  <div class="scratch-wrap">
+    <div class="scratch-reveal">✨ Los geht's! ✨</div>
+    <canvas id="scratchCanvas" width="280" height="100"></canvas>
+  </div>
+  <p class="scratch-hint">musst freirubbeln</p>
+  <button class="btn-primary" id="btnDice" onclick="goTo('step-dice')">Weiter →</button>
+</div>
+
+<!-- STEP 4: Dice -->
+<div class="step" id="step-dice">
+  <p class="dice-title">Würfle eine 6 nur 6 geht</p>
+  <div class="dice" id="dice" onclick="rollDice()">
+    <div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div>
+    <div class="dot" id="d4"></div><div class="dot" id="d5"></div><div class="dot" id="d6"></div>
+    <div class="dot" id="d7"></div><div class="dot" id="d8"></div><div class="dot" id="d9"></div>
+  </div>
+  <p class="dice-msg" id="diceMsg">Klick auf den Würfel!</p>
+</div>
+
+<!-- STEP 5: Quiz – Hauptstadt Belgien -->
+<div class="step quiz-step" id="step-q1">
+  <div class="quiz-card">
+    <span class="quiz-badge">Frage 1 von 4</span>
+    <p class="quiz-question">Was ist die Hauptstadt von Belgien?</p>
+    <input class="quiz-input" id="q1input" type="text" placeholder="Deine Antwort..." autocomplete="off"
+      onkeydown="if(event.key==='Enter') checkQ1()" />
+    <p class="quiz-error" id="q1error"></p>
+  </div>
+  <button class="btn-primary visible" onclick="checkQ1()">Weiter →</button>
+</div>
+
+<!-- STEP 6: Quiz – Rechnung -->
+<div class="step quiz-step" id="step-q2">
+  <div class="quiz-card">
+    <span class="quiz-badge">Frage 2 von 4</span>
+    <p class="quiz-question">Was ist 70,3 × 20?</p>
+    <input class="quiz-input" id="q2input" type="number" placeholder="Ergebnis..." autocomplete="off"
+      onkeydown="if(event.key==='Enter') checkQ2()" />
+    <p class="quiz-error" id="q2error"></p>
+  </div>
+  <button class="btn-primary visible" onclick="checkQ2()">Weiter →</button>
+</div>
+
+<!-- STEP 7: Quiz – Farbe -->
+<div class="step quiz-step" id="step-q3">
+  <div class="quiz-card">
+    <span class="quiz-badge">Frage 3 von 4</span>
+    <p class="quiz-question">In welcher Farbe schreibe ich immer also alles</p>
+    <input class="quiz-input" id="q3input" type="text" placeholder="Farbe eingeben..." autocomplete="off"
+      onkeydown="if(event.key==='Enter') checkQ3()" />
+    <p class="quiz-error" id="q3error"></p>
+  </div>
+  <button class="btn-primary visible" onclick="checkQ3()">Weiter</button>
+</div>
+
+<!-- STEP 8: Quiz – Zweistellige Zahl -->
+<div class="step quiz-step" id="step-q4">
+  <div class="quiz-card">
+    <span class="quiz-badge">Frage 4 von 4</span>
+    <p class="quiz-question">Gib die richtige zweistellige Zahl ein. es gibt nur eine ;)</p>
+    <input class="quiz-input" id="q4input" type="number" placeholder="Zahl eingeben..." autocomplete="off"
+      onkeydown="if(event.key==='Enter') checkQ4()" />
+    <p class="quiz-error" id="q4error"></p>
+  </div>
+  <button class="btn-primary visible" onclick="checkQ4()">Fertig ✓</button>
+</div>
+
+<!-- STEP 9: Final -->
+<div class="step" id="step-final">
+  <div class="final-heart">❤️</div>
+  <p class="final-msg">Ich wollte dir nur sagen, dass ich dich liebe 🥰</p>
+  <canvas class="confetti" id="confettiCanvas"></canvas>
+</div>
+
+<script>
+// Floating hearts
+const hc = document.getElementById('heartsContainer');
+['❤️','🌸','✨','💕','🌹'].forEach(e => {
+  for(let i=0;i<4;i++){
+    const h=document.createElement('div');
+    h.className='heart-float';
+    h.textContent=e;
+    h.style.left=Math.random()*100+'vw';
+    h.style.animationDuration=(8+Math.random()*12)+'s';
+    h.style.animationDelay=(-Math.random()*15)+'s';
+    h.style.fontSize=(.8+Math.random()*1.5)+'rem';
+    hc.appendChild(h);
+  }
+});
+
+// Navigation
+function goTo(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='step-scratch') initScratch();
+  if(id==='step-final') startConfetti();
+  const inp=document.querySelector('#'+id+' .quiz-input');
+  if(inp) setTimeout(()=>inp.focus(),300);
+}
+
+// Envelope
+let envelopeOpened=false;
+function openEnvelope(){
+  if(envelopeOpened)return;
+  envelopeOpened=true;
+  document.getElementById('envelopeWrap').classList.add('opened');
+  document.getElementById('envelopeWrap').style.cursor='default';
+  setTimeout(()=>goTo('step-letter'),1200);
+}
+
+// Scratch card
+function initScratch(){
+  const canvas=document.getElementById('scratchCanvas');
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#d4849e';
+  ctx.fillRect(0,0,280,100);
+  ctx.fillStyle='#c06080';
+  for(let i=0;i<60;i++){
+    ctx.beginPath();
+    ctx.arc(Math.random()*280,Math.random()*100,Math.random()*3+1,0,Math.PI*2);
+    ctx.fill();
+  }
+  ctx.fillStyle='rgba(255,255,255,0.15)';
+  ctx.font='500 16px -apple-system, Helvetica Neue, sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText(' HIER RUBBELN := ',140,58);
+  const total=280*100;
+  let isDown=false;
+  function scratch(x,y){
+    ctx.globalCompositeOperation='destination-out';
+    ctx.beginPath();ctx.arc(x,y,22,0,Math.PI*2);ctx.fill();
+    const d=ctx.getImageData(0,0,280,100).data;
+    let c=0;for(let i=3;i<d.length;i+=4)if(d[i]<128)c++;
+    if(c/total>0.5)document.getElementById('btnDice').classList.add('visible');
+  }
+  function pos(e,cv){const r=cv.getBoundingClientRect(),s=e.touches?e.touches[0]:e;return{x:s.clientX-r.left,y:s.clientY-r.top};}
+  canvas.addEventListener('mousedown',e=>{isDown=true;const p=pos(e,canvas);scratch(p.x,p.y);});
+  canvas.addEventListener('mousemove',e=>{if(isDown){const p=pos(e,canvas);scratch(p.x,p.y);}});
+  canvas.addEventListener('mouseup',()=>isDown=false);
+  canvas.addEventListener('touchstart',e=>{e.preventDefault();isDown=true;const p=pos(e,canvas);scratch(p.x,p.y);});
+  canvas.addEventListener('touchmove',e=>{e.preventDefault();if(isDown){const p=pos(e,canvas);scratch(p.x,p.y);}});
+  canvas.addEventListener('touchend',()=>isDown=false);
+}
+
+// Dice
+const diceFaces={1:[5],2:[3,7],3:[3,5,7],4:[1,3,7,9],5:[1,3,5,7,9],6:[1,3,4,6,7,9]};
+let rolling=false;
+function showFace(n){const p=diceFaces[n];for(let i=1;i<=9;i++)document.getElementById('d'+i).style.display=p.includes(i)?'block':'none';}
+showFace(1);
+
+function rollDice(){
+  if(rolling)return;
+  rolling=true;
+  const dice=document.getElementById('dice'),msg=document.getElementById('diceMsg');
+  dice.classList.add('rolling');msg.textContent='🎲 Würfeln...';
+  let count=0;
+  const iv=setInterval(()=>{
+    showFace(Math.floor(Math.random()*6)+1);count++;
+    if(count>10){
+      clearInterval(iv);dice.classList.remove('rolling');rolling=false;
+      const r=Math.floor(Math.random()*6)+1;showFace(r);
+      if(r===6){
+        msg.textContent='🎉 Eine 6! Yippiii';
+        dice.style.pointerEvents='none';
+        setTimeout(()=>goTo('step-q1'),1000);
+      } else {
+        msg.textContent=`Du hast eine ${r} gewürfelt, noch mal`;
+      }
+    }
+  },80);
+}
+
+// Quiz helpers
+function showError(inputId,errorId,msg){
+  const inp=document.getElementById(inputId);
+  inp.classList.remove('error');void inp.offsetWidth;inp.classList.add('error');
+  document.getElementById(errorId).textContent=msg;
+  setTimeout(()=>inp.classList.remove('error'),400);
+}
+
+// Q1 – Hauptstadt Belgien = Brüssel
+function checkQ1(){
+  const v=document.getElementById('q1input').value.trim().toLowerCase();
+  if(v.includes('br') && (v.includes('ssel') || v.includes('xell'))){
+    goTo('step-q2');
+  } else {
+    showError('q1input','q1error','Sorry das falsch :()');
+  }
+}
+
+// Q2 – 70.3 × 20 = 1406
+function checkQ2(){
+  const v=parseFloat(document.getElementById('q2input').value);
+  if(v===1406){
+    goTo('step-q3');
+  } else {
+    showError('q2input','q2error','Nope, Henni :(');
+  }
+}
+
+// Q3 – Farbe = Blau
+function checkQ3(){
+  const v=document.getElementById('q3input').value.trim().toLowerCase();
+  if(v==='blau'||v==='blue'){
+    goTo('step-q4');
+  } else {
+    showError('q3input','q3error','Das ist nicht die richtige Farb :()');
+  }
+}
+
+// Q4 – Zweistellige Zahl = 67
+function checkQ4(){
+  const v=parseInt(document.getElementById('q4input').value);
+  if(v===67){
+    goTo('step-final');
+  } else {
+    showError('q4input','q4error','Das ist nicht die richtige Zahl. Denk nochmal nach! 🔢');
+  }
+}
+
+// Confetti
+function startConfetti(){
+  const canvas=document.getElementById('confettiCanvas'),ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const colors=['#ff6b8a','#ff9eb5','#ffd6e0','#ffb3c6','#c0304e','#ffa0bb'];
+  const pieces=Array.from({length:120},()=>({
+    x:Math.random()*canvas.width,y:Math.random()*canvas.height-canvas.height,
+    w:8+Math.random()*8,h:6+Math.random()*6,
+    color:colors[Math.floor(Math.random()*colors.length)],
+    speed:2+Math.random()*4,angle:Math.random()*360,spin:(Math.random()-.5)*5
+  }));
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.angle*Math.PI/180);
+      ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+      p.y+=p.speed;p.angle+=p.spin;
+      if(p.y>canvas.height){p.y=-20;p.x=Math.random()*canvas.width;}
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+</script>
+</body>
+</html>
