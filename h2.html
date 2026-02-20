@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz 💌</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #fdf0f0;
+    background-image:
+      radial-gradient(circle at 20% 50%, #ffe0e8 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, #ffd6e7 0%, transparent 50%),
+      radial-gradient(circle at 60% 80%, #ffe8f0 0%, transparent 40%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    overflow-x: hidden;
+    padding: 20px;
+  }
+
+  .hearts-bg { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  .heart-float { position: absolute; bottom: -50px; animation: floatUp linear infinite; opacity: 0.15; }
+  @keyframes floatUp { to { transform: translateY(-110vh) rotate(20deg); opacity: 0; } }
+
+  .step { display: none; flex-direction: column; align-items: center; z-index: 1; width: 100%; max-width: 460px; }
+  .step.active { display: flex; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
+
+  /* INTRO */
+  #step-intro { animation: fadeIn 0.8s ease; gap: 24px; align-items: center; text-align: center; }
+  .intro-icon { font-size: 4rem; animation: heartbeat 1.4s ease-in-out infinite; }
+  @keyframes heartbeat { 0%,100%{transform:scale(1)} 14%{transform:scale(1.18)} 28%{transform:scale(1)} 42%{transform:scale(1.12)} 70%{transform:scale(1)} }
+  .intro-title { font-family: 'Playfair Display', Georgia, serif; font-size: 2.1rem; font-weight: 600; color: #b03060; letter-spacing: -0.02em; line-height: 1.2; }
+  .intro-sub { font-size: 1rem; font-weight: 300; color: #a06070; letter-spacing: 0.01em; line-height: 1.6; }
+
+  /* PROGRESS */
+  .progress-wrap { width: 100%; height: 6px; background: #f0c0cc; border-radius: 999px; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, #e8607a, #c0304e); border-radius: 999px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+  .progress-label { font-size: 0.78rem; font-weight: 500; color: #c08090; letter-spacing: 0.08em; text-transform: uppercase; align-self: flex-end; }
+
+  /* QUIZ CARD */
+  .quiz-card { background: #fffdf8; border-radius: 24px; padding: 36px 32px 28px; box-shadow: 0 8px 40px rgba(180,80,100,.15), 4px 4px 0 #f0d8e0; width: 100%; display: flex; flex-direction: column; gap: 20px; align-items: center; animation: fadeIn 0.4s ease; }
+  .quiz-badge { background: linear-gradient(135deg, #f5c6d0, #e8a0b4); color: #8b1a35; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 16px; border-radius: 50px; }
+  .quiz-question { font-family: 'Playfair Display', Georgia, serif; font-size: 1.35rem; font-weight: 400; color: #7a2040; text-align: center; line-height: 1.45; }
+  .quiz-error { font-size: 0.86rem; color: #c03050; font-weight: 400; min-height: 20px; text-align: center; }
+
+  /* CHOICES */
+  .choices { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+  .choice-btn { font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 0.97rem; font-weight: 400; color: #7a2040; background: #fff5f7; border: 2px solid #f0c0cc; border-radius: 14px; padding: 13px 20px; cursor: pointer; text-align: left; transition: border-color .18s, background .18s, transform .15s; letter-spacing: 0.01em; }
+  .choice-btn:hover { border-color: #e8607a; background: #fff0f3; transform: translateX(4px); }
+  .choice-btn.correct { border-color: #27ae60; background: #eafaf1; color: #1a6e3a; animation: popIn .3s ease; pointer-events: none; }
+  .choice-btn.wrong { border-color: #e83030; background: #fff0f0; color: #c03030; animation: shake .35s ease; }
+  .choice-btn.reveal { border-color: #27ae60; background: #eafaf1; color: #1a6e3a; pointer-events: none; }
+  @keyframes popIn { 0%{transform:scale(.97)} 60%{transform:scale(1.03)} 100%{transform:scale(1)} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+  /* TEXT INPUT */
+  .quiz-input { font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 1rem; font-weight: 400; color: #5a2035; background: #fff5f7; border: 2px solid #f0c0cc; border-radius: 12px; padding: 13px 18px; width: 100%; outline: none; text-align: center; transition: border-color .2s, box-shadow .2s; }
+  .quiz-input:focus { border-color: #e8607a; box-shadow: 0 0 0 4px rgba(232,96,122,.12); }
+  .quiz-input.error { border-color: #e83030; animation: shake .35s ease; }
+
+  /* BUTTON */
+  .btn-primary { font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 1.05rem; font-weight: 500; letter-spacing: 0.02em; background: linear-gradient(135deg, #e8607a, #c0304e); color: white; border: none; padding: 14px 40px; border-radius: 50px; cursor: pointer; box-shadow: 0 6px 20px rgba(180,60,80,.35); transition: transform .2s, box-shadow .2s; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(180,60,80,.4); }
+
+  /* RESULT */
+  #step-result { animation: fadeIn 0.9s ease; gap: 20px; align-items: center; text-align: center; }
+  .result-icon { font-size: 4.5rem; animation: heartbeat 1.2s ease-in-out infinite; }
+  .result-score { font-family: 'Playfair Display', Georgia, serif; font-size: 3.5rem; font-weight: 600; color: #c0304e; letter-spacing: -0.03em; line-height: 1; }
+  .result-score span { font-size: 1.4rem; font-weight: 400; color: #a06070; }
+  .result-msg { font-family: 'Playfair Display', Georgia, serif; font-size: 1.45rem; font-style: italic; color: #7a2040; line-height: 1.4; max-width: 360px; }
+  .result-detail { font-size: 0.93rem; font-weight: 300; color: #a06070; line-height: 1.6; max-width: 340px; }
+
+  .recap { width: 100%; display: flex; flex-direction: column; gap: 8px; max-height: 340px; overflow-y: auto; padding-right: 4px; }
+  .recap::-webkit-scrollbar { width: 4px; }
+  .recap::-webkit-scrollbar-track { background: #f8e8ec; border-radius: 4px; }
+  .recap::-webkit-scrollbar-thumb { background: #e8a0b4; border-radius: 4px; }
+  .recap-item { display: flex; align-items: flex-start; gap: 10px; background: #fffdf8; border-radius: 12px; padding: 10px 14px; font-size: 0.84rem; color: #7a2040; box-shadow: 0 2px 8px rgba(180,80,100,.08); text-align: left; }
+  .recap-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .recap-q { font-weight: 300; color: #a06070; font-size: 0.78rem; }
+  .recap-a { font-weight: 600; }
+
+  .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+</style>
+</head>
+<body>
+
+<div class="hearts-bg" id="heartsContainer"></div>
+
+<!-- INTRO -->
+<div class="step active" id="step-intro">
+  <div class="intro-icon">❤️</div>
+  <p class="intro-title">Rätsel<br></p>
+  <button class="btn-primary" onclick="startQuiz()">Quiz starten →</button>
+</div>
+
+<!-- QUIZ -->
+<div class="step" id="step-quiz">
+  <div class="progress-label" id="progressLabel">Frage 1 von 20</div>
+  <div class="progress-wrap" style="margin-bottom:16px"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+  <div class="quiz-card" id="quizCard"></div>
+</div>
+
+<!-- RESULT -->
+<div class="step" id="step-result">
+  <div class="result-icon" id="resultIcon">🎉</div>
+  <div class="result-score" id="resultScore">0 <span>/ 26</span></div>
+  <p class="result-msg" id="resultMsg"></p>
+  <p class="result-detail" id="resultDetail"></p>
+  <div class="recap" id="recap"></div>
+  <button class="btn-primary" onclick="restartQuiz()">Nochmal spielen 🔄</button>
+  <canvas class="confetti" id="confettiCanvas"></canvas>
+</div>
+
+<script>
+// Hearts
+const hc = document.getElementById('heartsContainer');
+['❤️','🌸','✨','💕','🌹','💗'].forEach(e => {
+  for(let i=0;i<3;i++){
+    const h=document.createElement('div');
+    h.className='heart-float'; h.textContent=e;
+    h.style.left=Math.random()*100+'vw';
+    h.style.animationDuration=(9+Math.random()*13)+'s';
+    h.style.animationDelay=(-Math.random()*16)+'s';
+    h.style.fontSize=(.7+Math.random()*1.3)+'rem';
+    hc.appendChild(h);
+  }
+});
+
+const questions = [
+  { q: 'Was ist die Lieblingszahl von Taylor Swift?', choices: ['7','11','13','21'], a: '13', emoji: '🌟' },
+  { q: 'Welche Wassermarke schmeckt am besten für mich? ', choices: ['Evian','Volvic','Adelholzener','San Pellegrino'], a: 'Adelholzener', emoji: '💧' },
+  { q: 'Welches ist mein Lieblingsflugzeug ?', choices: ['A330','A380','A340','A320'], a: 'A320', emoji: '✈️' },
+  { q: 'Wie tief ist der Tegernsee', choices: ['48 m','72 m','96 m','120 m'], a: '72 m', emoji: '🏔️' },
+  { q: 'Welche Nebenwirkung hat Aspirin?', choices: ['Stärkere Libido','Hunger','Kopfschmerzen','Schwindel'], a: 'Kopfschmerzen', emoji: '💊' },
+  { q: 'Was enthalten Auberginen?', choices: ['Aspartam','Radioaktives Material','Nikotin','Koffein'], a: 'Nikotin', emoji: '🍆' },
+  { q: 'Welches Tier schläft stehend?', choices: ['Elefant','Pferd','Giraffe','Kuh'], a: 'Pferd', emoji: '🐴' },
+  { q: 'Was ist die härteste Substanz der Welt?', choices: ['Gold','Diamant','Granit','Titan'], a: 'Diamant', emoji: '💎' },
+  { q: 'Wie viele Herzen hat ein Oktopus?', choices: ['1','2','3','4'], a: '3', emoji: '🐙' },
+  { q: 'Welches Land hat die meisten Seen der Welt?', choices: ['Russland','Kanada','Finnland','Schweden'], a: 'Kanada', emoji: '🌊' },
+  { q: 'Wie lange dauert ein Tag auf dem Planeten Venus?', choices: ['24 Stunden','48 Stunden','243 Erdtage','365 Tage'], a: '243 Erdtage', emoji: '☀️' },
+  { q: 'Welche Frucht hat die meisten Vitamine?', choices: ['Orange','Avocado','Kiwi','Mango'], a: 'Kiwi', emoji: '🍊' },
+  { q: 'In welchem Land wurde die Pizza erfunden?', choices: ['Spanien','Griechenland','Italien','Frankreich'], a: 'Italien', emoji: '🍕' },
+  { q: 'Wie viele Knochen hat ein Erwachsener?', choices: ['196','206','216','226'], a: '206', emoji: '🦴' },
+  { q: 'Welches ist das schnellste Landtier der Welt?', choices: ['Löwe','Gepard','Pferd','Strauß'], a: 'Gepard', emoji: '🐆' },
+  { q: 'Wie viele Millionen Kilometer ist die Sonne von der Erde entfernt? ☀️', choices: ['50 Mio.','150 Mio.','300 Mio.','500 Mio.'], a: '150 Mio.', emoji: '☀️' },
+  { q: 'Welches Element hat das chemische Symbol "Au"?', choices: ['Silber','Platin','Gold','Aluminium'], a: 'Gold', emoji: '⚗️' },
+  { q: 'Wie viele Sprachen gibt es weltweit ungefähr?', choices: ['2.000','4.500','7.000','10.000'], a: '7.000', emoji: '🌍' },
+  { q: 'Welches Organ produziert Insulin?', choices: ['Leber','Niere','Bauchspeicheldrüse','Milz'], a: 'Bauchspeicheldrüse', emoji: '🫀' },
+  { q: 'Wie heiß ist der Erdkern ungefähr', choices: ['1.000 °C','3.000 °C','6.000 °C','10.000 °C'], a: '6.000 °C', emoji: '🌋' },
+  { q: 'Welches Tier hat den höchsten Blutdruck?', choices: ['Elefant','Giraffe','Blauwal','Mensch'], a: 'Giraffe', emoji: '🦒' },
+  { q: 'Wie viele Gramm hat eine Unze Gold?', choices: ['21,1 g','28,3 g','31,1 g','35,5 g'], a: '31,1 g', emoji: '⚖️' },
+  { q: 'Welche Stadt hat die meisten Einwohner?', choices: ['Peking','New York','Mumbai','Tokio'], a: 'Tokio', emoji: '🏙️' },
+  { q: 'Wie viel Prozent der Erdoberfläche ist Wasser', choices: ['51 %','61 %','71 %','81 %'], a: '71 %', emoji: '🌊' },
+  { q: 'Was ist das leichteste Element im Periodensystem?', choices: ['Helium','Lithium','Wasserstoff','Bor'], a: 'Wasserstoff', emoji: '🔬' },
+  { q: 'Welches Tier kann am längsten ohne Wasser überleben?', choices: ['Kamel','Känguru','Kangaroo-Ratte','Wüstenfuchs'], a: 'Kangaroo-Ratte', emoji: '🌵' },
+];
+
+let currentQ = 0, score = 0, results = [], answered = false;
+
+function goTo(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startQuiz() {
+  currentQ = 0; score = 0; results = []; answered = false;
+  goTo('step-quiz');
+  renderQ();
+}
+
+function renderQ() {
+  answered = false;
+  const q = questions[currentQ];
+  const pct = (currentQ / questions.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `Frage ${currentQ+1} von ${questions.length}`;
+
+  const card = document.getElementById('quizCard');
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(16px)';
+  setTimeout(() => {
+    card.innerHTML = '';
+
+    const badge = document.createElement('span');
+    badge.className = 'quiz-badge';
+    badge.textContent = `Frage ${currentQ+1} von ${questions.length}`;
+    card.appendChild(badge);
+
+    const qEl = document.createElement('p');
+    qEl.className = 'quiz-question';
+    qEl.textContent = q.q;
+    card.appendChild(qEl);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'choices';
+    q.choices.forEach(ch => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.textContent = ch;
+      btn.onclick = () => pick(ch, btn, wrap, q);
+      wrap.appendChild(btn);
+    });
+    card.appendChild(wrap);
+
+    const err = document.createElement('p');
+    err.className = 'quiz-error';
+    err.id = 'currentError';
+    card.appendChild(err);
+
+    card.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+    card.style.opacity = '1';
+    card.style.transform = 'none';
+  }, 150);
+}
+
+function pick(chosen, btn, wrap, q) {
+  if(answered) return;
+  answered = true;
+  const correct = chosen === q.a;
+  if(correct) {
+    btn.classList.add('correct');
+    score++;
+  } else {
+    btn.classList.add('wrong');
+    // reveal correct
+    wrap.querySelectorAll('.choice-btn').forEach(b => {
+      if(b.textContent === q.a) b.classList.add('reveal');
+    });
+  }
+  wrap.querySelectorAll('.choice-btn').forEach(b => b.onclick = null);
+  results.push({ emoji: q.emoji, q: q.q, a: q.a, correct });
+
+  setTimeout(() => {
+    currentQ++;
+    if(currentQ < questions.length) renderQ();
+    else showResult();
+  }, correct ? 700 : 1300);
+}
+
+function showResult() {
+  document.getElementById('progressBar').style.width = '100%';
+  goTo('step-result');
+
+  const total = questions.length;
+  document.getElementById('resultScore').innerHTML = `${score} <span>/ ${total}</span>`;
+
+  let icon, msg, detail;
+  if(score === total) {
+    icon='❤️'; msg='Super alles richtig'; detail=':)';
+    startConfetti();
+  } else if(score >= 16) {
+    icon='❤️'; msg='Fast alles richtig :)'; detail=' <3';
+  } else if(score >= 12) {
+    icon='❤️'; msg='Das gut'; detail='';
+  } else {
+    icon='❤️'; msg='Naja'; detail='';
+  }
+
+  document.getElementById('resultIcon').textContent = icon;
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('resultDetail').textContent = detail;
+
+  const recap = document.getElementById('recap');
+  recap.innerHTML = '';
+  results.forEach(r => {
+    const item = document.createElement('div');
+    item.className = 'recap-item';
+    item.innerHTML = `<span class="recap-icon">${r.correct ? '✅' : '❌'}</span><div><div class="recap-q">${r.q}</div><div class="recap-a">${r.a}</div></div>`;
+    recap.appendChild(item);
+  });
+}
+
+function restartQuiz() {
+  const c = document.getElementById('confettiCanvas');
+  c.getContext('2d').clearRect(0,0,c.width,c.height);
+  // Shuffle questions for variety
+  for(let i=questions.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[questions[i],questions[j]]=[questions[j],questions[i]];}
+  startQuiz();
+}
+
+function startConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  const colors = ['#ff6b8a','#ff9eb5','#ffd6e0','#ffb3c6','#c0304e','#ffa0bb','#ffe0ea'];
+  const pieces = Array.from({length:140}, () => ({
+    x:Math.random()*canvas.width, y:Math.random()*canvas.height-canvas.height,
+    w:7+Math.random()*9, h:5+Math.random()*7,
+    color:colors[Math.floor(Math.random()*colors.length)],
+    speed:2+Math.random()*4, angle:Math.random()*360, spin:(Math.random()-.5)*6
+  }));
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p => {
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.angle*Math.PI/180);
+      ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+      p.y+=p.speed; p.angle+=p.spin;
+      if(p.y>canvas.height){p.y=-20;p.x=Math.random()*canvas.width;}
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+</script>
+</body>
+</html>
