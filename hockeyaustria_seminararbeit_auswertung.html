@@ -1,0 +1,338 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.tabs { display: flex; gap: 6px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.tab { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 6px 14px; font-size: 13px; cursor: pointer; color: var(--color-text-secondary); }
+.tab.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: transparent; }
+.panel { display: none; }
+.panel.active { display: block; }
+.section-title { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+.metric-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.metric-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.metric-sub { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px 16px; margin-bottom: 12px; }
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.chart-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 10px; }
+.chart-wrap { position: relative; }
+.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 12px; }
+.bar-label { width: 130px; color: var(--color-text-secondary); text-align: right; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-track { flex: 1; background: var(--color-background-secondary); border-radius: 3px; height: 14px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; }
+.bar-val { width: 40px; color: var(--color-text-primary); font-weight: 500; text-align: right; font-size: 12px; }
+.badge { font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); font-weight: 500; display: inline-block; margin-left: 6px; }
+.b-blue { background: var(--color-background-info); color: var(--color-text-info); }
+.b-warn { background: var(--color-background-warning); color: var(--color-text-warning); }
+.b-ok { background: var(--color-background-success); color: var(--color-text-success); }
+.b-gray { background: var(--color-background-secondary); color: var(--color-text-secondary); }
+.ff-box { border-left: 3px solid; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; padding: 10px 14px; margin-bottom: 10px; background: var(--color-background-secondary); }
+.ff-box.blue { border-color: #3266ad; }
+.ff-box.amber { border-color: #BA7517; }
+.ff-box.green { border-color: #3B6D11; }
+.ff-box.coral { border-color: #D85A30; }
+.ff-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.ff-text { font-size: 13px; color: var(--color-text-primary); line-height: 1.55; }
+.corr-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 12px; }
+.corr-label { width: 220px; color: var(--color-text-secondary); flex-shrink: 0; }
+.corr-bar-wrap { flex: 1; background: var(--color-background-secondary); border-radius: 3px; height: 12px; position: relative; overflow: hidden; }
+.corr-pos { height: 100%; background: #3266ad; border-radius: 3px; }
+.corr-neg { height: 100%; background: #d85a30; border-radius: 3px; }
+.corr-val { width: 44px; text-align: right; font-weight: 500; color: var(--color-text-primary); }
+</style>
+
+<div style="padding: 1rem 0;">
+<h2 class="sr-only">Hockey Austria – Empirische Auswertung zur Seminararbeit</h2>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('ff1')">FF 1: Wohlbefinden & Niveau</div>
+  <div class="tab" onclick="showTab('ff2')">FF 2: Body FOMO</div>
+  <div class="tab" onclick="showTab('sdt')">SDT & Motivation</div>
+  <div class="tab" onclick="showTab('soziokulturell')">Soziokultur</div>
+  <div class="tab" onclick="showTab('synthese')">Synthese & Fazit</div>
+</div>
+
+<div id="panel-ff1" class="panel active">
+  <div class="ff-box blue">
+    <div class="ff-label">Forschungsfrage 1</div>
+    <div class="ff-text">Bestehen Unterschiede im psychischen Wohlbefinden zwischen leistungsorientierten und weniger leistungsorientierten Feldhockeyspieler:innen?</div>
+  </div>
+
+  <div class="section-title">WHOQOL-Domänen nach Spielniveau (0–100)</div>
+  <div class="chart-grid">
+    <div class="card">
+      <div class="chart-title">Gesamtwohlbefinden (WH12)</div>
+      <div class="bar-row"><div class="bar-label">3. Liga</div><div class="bar-track"><div class="bar-fill" style="width:83%;background:#3B6D11;"></div></div><div class="bar-val">83,5</div></div>
+      <div class="bar-row"><div class="bar-label">keine Meisterschaft</div><div class="bar-track"><div class="bar-fill" style="width:78%;background:#63991F;"></div></div><div class="bar-val">78,5</div></div>
+      <div class="bar-row"><div class="bar-label">2. Bundesliga</div><div class="bar-track"><div class="bar-fill" style="width:77%;background:#97C459;"></div></div><div class="bar-val">77,0</div></div>
+      <div class="bar-row"><div class="bar-label">1. Bundesliga</div><div class="bar-track"><div class="bar-fill" style="width:75%;background:#C0DD97;"></div></div><div class="bar-val">74,6</div></div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-top:8px;">Niedrigstes Wohlbefinden bei höchstem Niveau — konsistent mit Belastungsliteratur (Raedeke & Smith, 2001)</div>
+    </div>
+    <div class="card">
+      <div class="chart-title">Lebenszufriedenheit gesamt (1–5)</div>
+      <div class="bar-row"><div class="bar-label">1. Bundesliga</div><div class="bar-track"><div class="bar-fill" style="width:84%;background:#3266ad;"></div></div><div class="bar-val">4,19</div></div>
+      <div class="bar-row"><div class="bar-label">2. Bundesliga</div><div class="bar-track"><div class="bar-fill" style="width:75%;background:#6697d4;"></div></div><div class="bar-val">3,76</div></div>
+      <div class="bar-row"><div class="bar-label">keine Meisterschaft</div><div class="bar-track"><div class="bar-fill" style="width:73%;background:#9abde2;"></div></div><div class="bar-val">3,67</div></div>
+      <div class="bar-row"><div class="bar-label">3. Liga</div><div class="bar-track"><div class="bar-fill" style="width:71%;background:#c4d9ee;"></div></div><div class="bar-val">3,56</div></div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-top:8px;">Lebenszufriedenheit steigt mit Niveau — Identifikation & Kompetenzerleben?</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chart-title">WHOQOL-Domänenprofil nach Niveau</div>
+    <div class="chart-wrap" style="height:220px;"><canvas id="whoByNiveau" role="img" aria-label="WHOQOL nach Niveau">1BL: Physisch 76.4, Psych 71.9, Sozial 75.4, Umwelt 84.1 | 2BL: Physisch 79.3, Psych 74.7, Sozial 73.9, Umwelt 86.8 | 3L: Physisch 83.6, Psych 79.0, Sozial 77.4, Umwelt 88.5</canvas></div>
+    <div style="display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--color-text-secondary);">
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#185FA5;"></span>1. Bundesliga</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#3266ad;"></span>2. Bundesliga</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#3B6D11;"></span>3. Liga</span>
+    </div>
+  </div>
+
+  <div class="ff-box green">
+    <div class="ff-label">Befund</div>
+    <div class="ff-text">Das Bild ist differenziert: 1.-Bundesliga-Spieler:innen zeigen die höchste Lebenszufriedenheit (4,19), aber niedrigsten WHOQOL-Werte (74,6) — was auf ein Spannungsfeld zwischen sportlicher Begeisterung und physisch-psychischer Belastung hindeutet. 3.-Liga-Spieler:innen haben das beste Wohlbefinden (83,5) bei geringerer Zufriedenheit. Autonomie-Frustration ist in der 1. Bundesliga klar am höchsten (4,16 vs. 2,82 in der 3. Liga).</div>
+  </div>
+</div>
+
+<div id="panel-ff2" class="panel">
+  <div class="ff-box amber">
+    <div class="ff-label">Forschungsfrage 2</div>
+    <div class="ff-text">Bestehen Unterschiede hinsichtlich Body FOMO zwischen leistungsorientierten und weniger leistungsorientierten Feldhockeyspieler:innen?</div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-label">BFOMO Gesamt Ø</div><div class="metric-value">2,15</div><div class="metric-sub">Skala 1–5 · niedrig</div></div>
+    <div class="metric"><div class="metric-label">Frauen</div><div class="metric-value">2,46</div><div class="metric-sub">vs. Männer 1,86</div></div>
+    <div class="metric"><div class="metric-label">Nachwuchs-NT</div><div class="metric-value">2,74</div><div class="metric-sub">höchste Gruppe</div></div>
+    <div class="metric"><div class="metric-label">× Spieljahre</div><div class="metric-value">r = −.36</div><div class="metric-sub">mehr Erfahrung → weniger FOMO</div></div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="card">
+      <div class="chart-title">BFOMO nach Spielniveau</div>
+      <div class="bar-row"><div class="bar-label">1. Bundesliga</div><div class="bar-track"><div class="bar-fill" style="width:47%;background:#d85a30;"></div></div><div class="bar-val">2,35</div></div>
+      <div class="bar-row"><div class="bar-label">keine Meisterschaft</div><div class="bar-track"><div class="bar-fill" style="width:43%;background:#e47855;"></div></div><div class="bar-val">2,14</div></div>
+      <div class="bar-row"><div class="bar-label">2. Bundesliga</div><div class="bar-track"><div class="bar-fill" style="width:42%;background:#ed9b7b;"></div></div><div class="bar-val">2,08</div></div>
+      <div class="bar-row"><div class="bar-label">3. Liga</div><div class="bar-track"><div class="bar-fill" style="width:36%;background:#f5c4b3;"></div></div><div class="bar-val">1,81</div></div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-top:8px;">Leichter Trend: höheres Niveau → etwas mehr BFOMO</div>
+    </div>
+    <div class="card">
+      <div class="chart-title">BFOMO nach Nationalteam</div>
+      <div class="bar-row"><div class="bar-label">Nachwuchs-NT</div><div class="bar-track"><div class="bar-fill" style="width:55%;background:#d85a30;"></div></div><div class="bar-val">2,74</div></div>
+      <div class="bar-row"><div class="bar-label">A-Kader</div><div class="bar-track"><div class="bar-fill" style="width:43%;background:#ed9b7b;"></div></div><div class="bar-val">2,14</div></div>
+      <div class="bar-row"><div class="bar-label">kein Nationalteam</div><div class="bar-track"><div class="bar-fill" style="width:41%;background:#f5c4b3;"></div></div><div class="bar-val">2,05</div></div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-top:8px;">Nachwuchs am stärksten betroffen — Druck in Entwicklungsphase?</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chart-title">Wichtige Korrelationen mit BFOMO</div>
+    <div class="corr-row"><div class="corr-label">Spieljahre (Erfahrung)</div><div class="corr-bar-wrap"><div class="corr-neg" style="width:36%;"></div></div><div class="corr-val">−.36</div></div>
+    <div class="corr-row"><div class="corr-label">WH12 (Lebensqualität)</div><div class="corr-bar-wrap"><div class="corr-neg" style="width:40%;"></div></div><div class="corr-val">−.40</div></div>
+    <div class="corr-row"><div class="corr-label">Autonomie-Frustration</div><div class="corr-bar-wrap"><div class="corr-pos" style="width:40%;"></div></div><div class="corr-val">+.40</div></div>
+    <div class="corr-row"><div class="corr-label">ES-RAI (Autonome Mot.)</div><div class="corr-bar-wrap"><div class="corr-neg" style="width:29%;"></div></div><div class="corr-val">−.29</div></div>
+    <div class="corr-row"><div class="corr-label">Zeitaufwand</div><div class="corr-bar-wrap"><div class="corr-pos" style="width:34%;"></div></div><div class="corr-val">+.34</div></div>
+    <div class="corr-row"><div class="corr-label">Social Media (Std.)</div><div class="corr-bar-wrap"><div class="corr-pos" style="width:5%;"></div></div><div class="corr-val">+.06</div></div>
+  </div>
+
+  <div class="ff-box amber">
+    <div class="ff-label">Befund — überraschend</div>
+    <div class="ff-text">Social-Media-Nutzung korreliert kaum mit BFOMO (r = .06). Stattdessen sind Autonomie-Frustration und allgemeine Lebensqualität die stärksten Prädiktoren. Erfahrungsbasierter Schutz: Je länger jemand spielt, desto weniger FOMO (r = −.36). Das Nachwuchs-Nationalteam zeigt die höchsten Werte — ein Hinweis auf besonderen Entwicklungsdruck in dieser Phase.</div>
+  </div>
+</div>
+
+<div id="panel-sdt" class="panel">
+  <div class="ff-box blue">
+    <div class="ff-label">Theorie – Self-Determination Theory (Deci & Ryan, 1985)</div>
+    <div class="ff-text">Motivation wird als Kontinuum verstanden: von Amotivation über externe und introjizierte hin zu identifizierter Regulation und intrinsischer Motivation. Der RAI-Index fasst dies zu einem Gesamtmaß autonomer Motivation zusammen.</div>
+  </div>
+
+  <div class="section-title">Motivationsprofil der Stichprobe</div>
+  <div class="chart-grid">
+    <div class="card">
+      <div class="chart-wrap" style="height:210px;"><canvas id="motivNiveau" role="img" aria-label="Motivation nach Niveau">Amotivation, External Reg, Introjected, Identified, Intrinsic nach Niveau</canvas></div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-top:8px;">Motivationsformen nach Spielniveau (1–7)</div>
+      <div style="display:flex;gap:12px;margin-top:6px;flex-wrap:wrap;font-size:11px;color:var(--color-text-secondary);">
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#185FA5;"></span>1. BL</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#6697d4;"></span>2. BL</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#3B6D11;"></span>3. Liga</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="chart-title">ES-RAI nach Spielniveau</div>
+      <div class="bar-row"><div class="bar-label">3. Liga</div><div class="bar-track"><div class="bar-fill" style="width:65%;background:#3B6D11;"></div></div><div class="bar-val">10,84</div></div>
+      <div class="bar-row"><div class="bar-label">keine Meisterschaft</div><div class="bar-track"><div class="bar-fill" style="width:63%;background:#63991F;"></div></div><div class="bar-val">10,54</div></div>
+      <div class="bar-row"><div class="bar-label">2. Bundesliga</div><div class="bar-track"><div class="bar-fill" style="width:54%;background:#6697d4;"></div></div><div class="bar-val">9,05</div></div>
+      <div class="bar-row"><div class="bar-label">1. Bundesliga</div><div class="bar-track"><div class="bar-fill" style="width:49%;background:#185FA5;"></div></div><div class="bar-val">8,20</div></div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-top:8px;">Paradox: Niedrigstes Niveau → höchster RAI. Mögl. Erklärung: weniger Druck, mehr Freude.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chart-title">Grundbedürfnisse (Basic Needs) — Satisfaction vs. Frustration nach Niveau</div>
+    <div class="chart-wrap" style="height:220px;"><canvas id="bnNiveau" role="img" aria-label="Basic Needs nach Niveau"></canvas></div>
+  </div>
+
+  <div class="ff-box green">
+    <div class="ff-label">Theoretische Einordnung</div>
+    <div class="ff-text">Die Daten bestätigen die SDT-Grundannahmen: Identified Regulation (5,68) und Intrinsic Motivation (5,35) dominieren niveauübergreifend. Das passt zum Kontext einer Randsportart ohne extrinsische Anreize. Auffällig: In der 1. Bundesliga ist Autonomie-Frustration am höchsten (4,16) und der RAI am niedrigsten (8,20) — strukturelle Einschränkungen durch professionelleres Umfeld? Die 3. Liga zeigt das reinste intrinsische Profil.</div>
+  </div>
+</div>
+
+<div id="panel-soziokulturell" class="panel">
+  <div class="section-title">Soziodemographisches Profil der „Hockey-Blase"</div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-label">Ø Spieljahre</div><div class="metric-value">17,5</div><div class="metric-sub">lebenslange Sportbindung</div></div>
+    <div class="metric"><div class="metric-label">Hochschulabschluss</div><div class="metric-value">40%</div><div class="metric-sub">+ 26% Matura</div></div>
+    <div class="metric"><div class="metric-label">Familiär eingebunden</div><div class="metric-value">41%</div><div class="metric-sub">mind. 1 Verwandter spielt</div></div>
+    <div class="metric"><div class="metric-label">Stadtbewohnend</div><div class="metric-value">91%</div><div class="metric-sub">197 von 216</div></div>
+    <div class="metric"><div class="metric-label">Aus Österreich</div><div class="metric-value">78%</div><div class="metric-sub">168 von 216</div></div>
+    <div class="metric"><div class="metric-label">Kein eig. Einkommen</div><div class="metric-value">28%</div><div class="metric-sub">61 ohne Einkommen</div></div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="card">
+      <div class="chart-title">Familiärer Hockeyhintergrund</div>
+      <div class="bar-row"><div class="bar-label">Geschwister</div><div class="bar-track"><div class="bar-fill" style="width:49%;background:#3266ad;"></div></div><div class="bar-val">49</div></div>
+      <div class="bar-row"><div class="bar-label">Mutter / Vater</div><div class="bar-track"><div class="bar-fill" style="width:48%;background:#3266ad;"></div></div><div class="bar-val">48</div></div>
+      <div class="bar-row"><div class="bar-label">Onkel / Tante</div><div class="bar-track"><div class="bar-fill" style="width:22%;background:#6697d4;"></div></div><div class="bar-val">22</div></div>
+      <div class="bar-row"><div class="bar-label">Cousin / Cousine</div><div class="bar-track"><div class="bar-fill" style="width:10%;background:#9abde2;"></div></div><div class="bar-val">10</div></div>
+      <div class="bar-row"><div class="bar-label">Großeltern</div><div class="bar-track"><div class="bar-fill" style="width:4%;background:#c4d9ee;"></div></div><div class="bar-val">4</div></div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-top:8px;">41% (88/216) haben mind. einen Familienangehörigen mit Hockeybezug</div>
+    </div>
+    <div class="card">
+      <div class="chart-title">Social-Media-Nutzung (Std./Woche)</div>
+      <div class="chart-wrap" style="height:170px;"><canvas id="smChart" role="img" aria-label="Social Media Nutzung">0-2h: 25, 2-5h: 48, 5-10h: 63, 10-20h: 50, über 20h: 30</canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chart-title">Einkommenssituation — Kontext Randsportart</div>
+    <div class="chart-wrap" style="height:190px;"><canvas id="einkommenChart" role="img" aria-label="Einkommen">kein Einkommen: 61, unter 500: 26, 500-1500: 33, 1500-2500: 25, 2500-3500: 32, über 3500: 32, keine Angabe: 4</canvas></div>
+    <div style="font-size:11px;color:var(--color-text-secondary);margin-top:8px;">Über ein Viertel hat kein eigenes Einkommen (Schüler/Studierende). Dies unterstreicht: Hockey wird nicht um des Geldes willen betrieben.</div>
+  </div>
+
+  <div class="ff-box coral">
+    <div class="ff-label">Soziokulturelle Einordnung</div>
+    <div class="ff-text">Das Profil zeigt eine klar definierte „Hockey-Blase": hoch gebildet, urban, familiär eingebunden, langfristig sportlich engagiert (Ø 17,5 Jahre). 41% der Befragten haben Familienmitglieder, die ebenfalls Hockey spielen — ein starkes Indiz für soziale Reproduktion des Sports. Die Kombination aus niedrigem Einkommen, hohem Bildungsstand und langer Sportbiografie passt zur These intrinsischer Bindung.
+    </div>
+  </div>
+</div>
+
+<div id="panel-synthese" class="panel">
+  <div class="section-title">Synthese: Empirie trifft Theorie</div>
+
+  <div class="card" style="margin-bottom:12px;">
+    <div class="chart-title">Schlüssel-Korrelationen im Überblick</div>
+    <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px;">Stärke des Zusammenhangs (r)</div>
+    <div class="corr-row"><div class="corr-label">Zeitaufwand × Hockey-Zufriedenheit</div><div class="corr-bar-wrap"><div class="corr-pos" style="width:50%;"></div></div><div class="corr-val">+.50</div></div>
+    <div class="corr-row"><div class="corr-label">BFOMO × Lebensqualität (WH12)</div><div class="corr-bar-wrap"><div class="corr-neg" style="width:40%;"></div></div><div class="corr-val">−.40</div></div>
+    <div class="corr-row"><div class="corr-label">Autonomie-Frustration × BFOMO</div><div class="corr-bar-wrap"><div class="corr-pos" style="width:40%;"></div></div><div class="corr-val">+.40</div></div>
+    <div class="corr-row"><div class="corr-label">Spieljahre × BFOMO</div><div class="corr-bar-wrap"><div class="corr-neg" style="width:36%;"></div></div><div class="corr-val">−.36</div></div>
+    <div class="corr-row"><div class="corr-label">Zeitaufwand × BFOMO</div><div class="corr-bar-wrap"><div class="corr-pos" style="width:34%;"></div></div><div class="corr-val">+.34</div></div>
+    <div class="corr-row"><div class="corr-label">Intrinsische Mot. × Hockey-Zufriedenheit</div><div class="corr-bar-wrap"><div class="corr-pos" style="width:29%;"></div></div><div class="corr-val">+.29</div></div>
+    <div class="corr-row"><div class="corr-label">Zeitaufwand × Wohlbefinden (WH12)</div><div class="corr-bar-wrap"><div class="corr-neg" style="width:26%;"></div></div><div class="corr-val">−.26</div></div>
+    <div class="corr-row"><div class="corr-label">Relatedness × Lebensqualität</div><div class="corr-bar-wrap"><div class="corr-pos" style="width:22%;"></div></div><div class="corr-val">+.22</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+    <div class="ff-box blue" style="margin-bottom:0;">
+      <div class="ff-label"><i class="ti ti-check" aria-hidden="true"></i> Bestätigt</div>
+      <div class="ff-text" style="font-size:12px;">Intrinsische Motivation dominiert deutlich — stützt die SDT-Grundannahme für Randsportarten ohne Extrinsic-Anreize (Deci & Ryan, 1985; Pelletier et al., 2001). Soziale Eingebundenheit korreliert positiv mit Wohlbefinden und Lebensqualität.</div>
+    </div>
+    <div class="ff-box amber" style="margin-bottom:0;">
+      <div class="ff-label"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Differenziert</div>
+      <div class="ff-text" style="font-size:12px;">Wohlbefinden sinkt mit steigendem Niveau trotz höherer Zufriedenheit — ein Spannungsverhältnis. Passt zu Raedeke & Smith (2001): höhere Leistungsansprüche = mehr Belastung. Zeitaufwand erhöht Zufriedenheit, senkt aber Wohlbefinden (WH12).</div>
+    </div>
+    <div class="ff-box green" style="margin-bottom:0;">
+      <div class="ff-label"><i class="ti ti-bulb" aria-hidden="true"></i> Neu/Überraschend</div>
+      <div class="ff-text" style="font-size:12px;">Social-Media-Nutzung korreliert kaum mit BFOMO (r = .06). Autonomie-Frustration ist der stärkere Treiber. Spielerfahrung schützt vor FOMO (r = −.36). Hockey scheint langfristig als regulierende Ressource zu wirken.</div>
+    </div>
+    <div class="ff-box coral" style="margin-bottom:0;">
+      <div class="ff-label"><i class="ti ti-users" aria-hidden="true"></i> Handlungsbedarf</div>
+      <div class="ff-text" style="font-size:12px;">Nachwuchs-Nationalkaderathlet:innen zeigen das schlechteste Wohlbefindensprofil (WH12 = 67,3) und die höchsten BFOMO-Werte (2,74). Diese Gruppe verdient gezielte sportpsychologische Begleitung.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chart-title" style="margin-bottom:12px;">Gesamtfazit</div>
+    <div style="font-size:13px;color:var(--color-text-primary);line-height:1.7;">
+      Die Daten zeichnen das Bild einer Sportart, die durch <strong>starke intrinsische Bindung</strong> getragen wird. Österreichische Feldhockeyspieler:innen zeigen ein gesundes Motivationsprofil nach SDT, gute Lebensqualität und ausgeprägte soziale Einbettung in eine klar definierte Sportgemeinschaft. 
+      <br><br>
+      Gleichzeitig zeigen sich Belastungszeichen bei leistungsorientierten Athletinnen und Athleten: höherer Zeitaufwand geht zwar mit mehr Hockeyzufriedenheit einher, drückt aber auf das allgemeine Wohlbefinden. Body FOMO wird weniger durch Social Media als durch erlebte Autonomie-Frustration getrieben — ein Befund, der die SDT-Perspektive eindrucksvoll bestätigt und zugleich neue Fragen zur Rolle struktureller Rahmenbedingungen im Nachwuchsleistungssport aufwirft.
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[onclick="showTab(\''+name+'\')"]').classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const tc = isDark ? '#aaa' : '#666';
+const gc = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+const base = { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} };
+
+new Chart(document.getElementById('whoByNiveau'), {
+  type:'bar',
+  data:{
+    labels:['Physisch','Psychologisch','Soziale Bez.','Umwelt'],
+    datasets:[
+      {label:'1. Bundesliga', data:[76.38,71.88,75.38,84.06], backgroundColor:'#185FA5', borderRadius:3, borderSkipped:false},
+      {label:'2. Bundesliga', data:[79.28,74.71,73.94,86.84], backgroundColor:'#6697d4', borderRadius:3, borderSkipped:false},
+      {label:'3. Liga', data:[83.61,78.95,77.35,88.46], backgroundColor:'#3B6D11', borderRadius:3, borderSkipped:false}
+    ]
+  },
+  options:{...base, scales:{x:{ticks:{color:tc,font:{size:11}},grid:{color:gc}},y:{min:60,max:100,ticks:{color:tc,font:{size:11}},grid:{color:gc}}}}
+});
+
+new Chart(document.getElementById('motivNiveau'), {
+  type:'bar',
+  data:{
+    labels:['Amotiv.','External','Introjected','Identified','Intrinsic'],
+    datasets:[
+      {label:'1. Bundesliga', data:[2.57,1.79,4.49,5.59,5.34], backgroundColor:'#185FA5', borderRadius:3, borderSkipped:false},
+      {label:'2. Bundesliga', data:[2.71,1.59,3.95,5.72,5.23], backgroundColor:'#6697d4', borderRadius:3, borderSkipped:false},
+      {label:'3. Liga', data:[2.20,1.32,3.33,5.78,5.51], backgroundColor:'#3B6D11', borderRadius:3, borderSkipped:false}
+    ]
+  },
+  options:{...base,scales:{x:{ticks:{color:tc,font:{size:10}},grid:{color:gc}},y:{min:0,max:7,ticks:{color:tc,font:{size:11}},grid:{color:gc}}}}
+});
+
+new Chart(document.getElementById('bnNiveau'), {
+  type:'bar',
+  data:{
+    labels:['Autonomy Sat','Competence Sat','Relatedness Sat','Autonomy Frust','Competence Frust','Relat. Frust'],
+    datasets:[
+      {label:'1. Bundesliga', data:[4.58,5.58,5.62,4.16,1.84,1.77], backgroundColor:'#185FA5', borderRadius:3, borderSkipped:false},
+      {label:'2. Bundesliga', data:[4.66,5.30,5.54,3.43,1.93,1.80], backgroundColor:'#6697d4', borderRadius:3, borderSkipped:false},
+      {label:'3. Liga', data:[5.19,5.05,5.94,2.82,1.57,1.41], backgroundColor:'#3B6D11', borderRadius:3, borderSkipped:false}
+    ]
+  },
+  options:{...base,plugins:{legend:{display:true,labels:{color:tc,font:{size:11},boxWidth:12}}},scales:{x:{ticks:{color:tc,font:{size:10}},grid:{color:gc}},y:{min:0,max:7,ticks:{color:tc,font:{size:11}},grid:{color:gc}}}}
+});
+
+new Chart(document.getElementById('smChart'), {
+  type:'bar',
+  data:{
+    labels:['0–2 h','2–5 h','5–10 h','10–20 h','>20 h'],
+    datasets:[{data:[25,48,63,50,30], backgroundColor:['#c4d9ee','#9abde2','#6697d4','#3266ad','#185FA5'], borderRadius:4, borderSkipped:false}]
+  },
+  options:{...base,scales:{x:{ticks:{color:tc,font:{size:11}},grid:{color:gc}},y:{ticks:{color:tc,font:{size:11}},grid:{color:gc}}}}
+});
+
+new Chart(document.getElementById('einkommenChart'), {
+  type:'bar',
+  data:{
+    labels:['kein Einkomm.','<500€','500–1500€','1500–2500€','2500–3500€','>3500€'],
+    datasets:[{data:[61,26,33,25,32,32], backgroundColor:'#6697d4', borderRadius:4, borderSkipped:false}]
+  },
+  options:{...base,scales:{x:{ticks:{color:tc,font:{size:10},maxRotation:30},grid:{color:gc}},y:{ticks:{color:tc,font:{size:11}},grid:{color:gc}}}}
+});
+</script>
