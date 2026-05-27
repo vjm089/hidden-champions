@@ -1,0 +1,288 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.section { margin-bottom: 2rem; }
+.section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+.metric-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.metric-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.metric-sub { font-size: 12px; color: var(--color-text-tertiary); margin-top: 2px; }
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 1.5rem; }
+.chart-box { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px; }
+.chart-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 10px; }
+.chart-wrap { position: relative; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; font-size: 11px; color: var(--color-text-secondary); }
+.legend span { display: flex; align-items: center; gap: 4px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.tabs { display: flex; gap: 6px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.tab { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 6px 14px; font-size: 13px; cursor: pointer; color: var(--color-text-secondary); transition: all 0.15s; }
+.tab.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: transparent; }
+.panel { display: none; }
+.panel.active { display: block; }
+.fazit { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+.fazit-item { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; line-height: 1.5; color: var(--color-text-primary); }
+.fazit-item:last-child { border-bottom: none; }
+.fazit-icon { font-size: 16px; color: var(--color-text-info); flex-shrink: 0; margin-top: 1px; }
+.badge { font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); background: var(--color-background-info); color: var(--color-text-info); font-weight: 500; }
+.badge.warn { background: var(--color-background-warning); color: var(--color-text-warning); }
+.badge.ok { background: var(--color-background-success); color: var(--color-text-success); }
+.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; }
+.bar-label { width: 120px; color: var(--color-text-secondary); text-align: right; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-track { flex: 1; background: var(--color-background-secondary); border-radius: 3px; height: 14px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+.bar-val { width: 36px; color: var(--color-text-primary); font-weight: 500; text-align: right; }
+</style>
+
+<div style="padding: 1rem 0;">
+<h2 class="sr-only">Hockey Austria – Analyse Dashboard (n=216)</h2>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('uebersicht')">Überblick</div>
+  <div class="tab" onclick="showTab('motivation')">Motivation</div>
+  <div class="tab" onclick="showTab('wohlbefinden')">Wohlbefinden</div>
+  <div class="tab" onclick="showTab('gruppenvergleich')">Gruppenvergleiche</div>
+  <div class="tab" onclick="showTab('fazit')">Fazit</div>
+</div>
+
+<div id="panel-uebersicht" class="panel active">
+  <div class="section-title">Stichprobe – soziodemografie</div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-label">Befragte gesamt</div><div class="metric-value">216</div><div class="metric-sub">vollständige Datensätze</div></div>
+    <div class="metric"><div class="metric-label">Ø Alter</div><div class="metric-value">28,4</div><div class="metric-sub">Median 23 · Range 16–88</div></div>
+    <div class="metric"><div class="metric-label">Männlich</div><div class="metric-value">53%</div><div class="metric-sub">114 von 216</div></div>
+    <div class="metric"><div class="metric-label">Ø Spieljahre</div><div class="metric-value">17,5</div><div class="metric-sub">Median 15 · Range 1–75</div></div>
+    <div class="metric"><div class="metric-label">Nationalteam</div><div class="metric-value">24%</div><div class="metric-sub">A-Kader + Nachwuchs</div></div>
+    <div class="metric"><div class="metric-label">Ø Zeitaufwand</div><div class="metric-value">9,4 h</div><div class="metric-sub">pro Woche gesamt</div></div>
+  </div>
+
+  <div class="chart-row">
+    <div class="chart-box">
+      <div class="chart-title">Altersverteilung</div>
+      <div class="chart-wrap" style="height:160px;"><canvas id="ageChart" role="img" aria-label="Altersverteilung der Befragten">unter 18: 44, 18–25: 81, 26–35: 40, 36–45: 17, 46+: 34</canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Spielniveau</div>
+      <div class="chart-wrap" style="height:160px;"><canvas id="niveauChart" role="img" aria-label="Spielniveau">1. Bundesliga: 88, 2. Bundesliga: 71, 3. Liga: 39, keine Meisterschaft: 18</canvas></div>
+    </div>
+  </div>
+
+  <div class="section-title">Zeitaufwand pro Woche</div>
+  <div style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px;">
+    <div class="bar-row"><div class="bar-label">Hockeytraining</div><div class="bar-track"><div class="bar-fill" style="width:40%;background:#3266ad;"></div></div><div class="bar-val">4,4 h</div></div>
+    <div class="bar-row"><div class="bar-label">Matches</div><div class="bar-track"><div class="bar-fill" style="width:15%;background:#3266ad;"></div></div><div class="bar-val">1,7 h</div></div>
+    <div class="bar-row"><div class="bar-label">Zusatztraining</div><div class="bar-track"><div class="bar-fill" style="width:24%;background:#6697d4;"></div></div><div class="bar-val">2,7 h</div></div>
+    <div class="bar-row"><div class="bar-label">Zusatzmaßnahmen</div><div class="bar-track"><div class="bar-fill" style="width:6%;background:#9abde2;"></div></div><div class="bar-val">0,7 h</div></div>
+    <div class="bar-row"><div class="bar-label" style="font-weight:500;color:var(--color-text-primary);">Gesamt</div><div class="bar-track"><div class="bar-fill" style="width:85%;background:#185FA5;"></div></div><div class="bar-val" style="font-weight:500;">9,4 h</div></div>
+  </div>
+</div>
+
+<div id="panel-motivation" class="panel">
+  <div class="section-title">Motivationsregulation (Self-Determination Theory)</div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-label">ES-RAI (Ø)</div><div class="metric-value">9,15</div><div class="metric-sub">stark autonom motiviert</div></div>
+    <div class="metric"><div class="metric-label">Intrinsische Mot.</div><div class="metric-value">5,35</div><div class="metric-sub">von 7 · hoch</div></div>
+    <div class="metric"><div class="metric-label">Identified Reg.</div><div class="metric-value">5,68</div><div class="metric-sub">von 7 · hoch</div></div>
+    <div class="metric"><div class="metric-label">BFOMO (Ø)</div><div class="metric-value">2,15</div><div class="metric-sub">von 5 · niedrig</div></div>
+  </div>
+
+  <div class="chart-row">
+    <div class="chart-box">
+      <div class="chart-title">Motivationsformen (Mittelwerte)</div>
+      <div class="legend">
+        <span><span class="legend-dot" style="background:#3266ad;"></span>Wert</span>
+      </div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="motivChart" role="img" aria-label="Motivationsformen">Amotivation: 2.55, External: 1.60, Introjected: 4.03, Identified: 5.68, Intrinsic: 5.35</canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Basic Needs (Satisfaction vs. Frustration)</div>
+      <div class="legend">
+        <span><span class="legend-dot" style="background:#3266ad;"></span>Satisfaction</span>
+        <span><span class="legend-dot" style="background:#d85a30;"></span>Frustration</span>
+      </div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="bnChart" role="img" aria-label="Basic Needs">Autonomy sat 4.73 frust 3.61, Competence sat 5.35 frust 1.81, Relatedness sat 5.65 frust 1.68</canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-box" style="margin-bottom:1rem;">
+    <div class="chart-title">BFOMO (Fear of Missing Out) – Korrelationen</div>
+    <div style="padding: 4px 0;">
+      <div class="bar-row"><div class="bar-label">× WH12-Lebensqualität</div><div class="bar-track"><div class="bar-fill" style="width:40%;background:#d85a30;"></div></div><div class="bar-val">r=−.40</div></div>
+      <div class="bar-row"><div class="bar-label">× Autonomie-Frustration</div><div class="bar-track"><div class="bar-fill" style="width:40%;background:#d85a30;"></div></div><div class="bar-val">r=+.40</div></div>
+      <div class="bar-row"><div class="bar-label">× ES-RAI</div><div class="bar-track"><div class="bar-fill" style="width:29%;background:#d85a30;"></div></div><div class="bar-val">r=−.29</div></div>
+      <div class="bar-row"><div class="bar-label">× Zeitaufwand</div><div class="bar-track"><div class="bar-fill" style="width:34%;background:#e89878;"></div></div><div class="bar-val">r=+.34</div></div>
+    </div>
+    <div style="font-size:12px;color:var(--color-text-secondary);margin-top:8px;">Höherer Zeitaufwand geht mit mehr FOMO einher; FOMO korreliert negativ mit Lebensqualität und autonomer Motivation.</div>
+  </div>
+</div>
+
+<div id="panel-wohlbefinden" class="panel">
+  <div class="section-title">Lebensqualität & Wohlbefinden</div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-label">WHOQOL-Gesamt (Ø)</div><div class="metric-value">77,3</div><div class="metric-sub">von 100 · gut</div></div>
+    <div class="metric"><div class="metric-label">Physisch</div><div class="metric-value">79,1</div><div class="metric-sub">von 100 · stärkste Domäne</div></div>
+    <div class="metric"><div class="metric-label">Umwelt</div><div class="metric-value">86,0</div><div class="metric-sub">von 100 · beste Domäne</div></div>
+    <div class="metric"><div class="metric-label">LA Gesamt (Ø)</div><div class="metric-value">3,89</div><div class="metric-sub">von 5 · hoch</div></div>
+  </div>
+
+  <div class="chart-row">
+    <div class="chart-box">
+      <div class="chart-title">WHOQOL-Domänen (0–100)</div>
+      <div class="chart-wrap" style="height:200px;"><canvas id="whoChart" role="img" aria-label="WHOQOL Domänen">Physisch 79.1, Psychologisch 74.5, Soziale Beziehungen 75.5, Umwelt 86.0</canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Lebenszufriedenheit (1–5)</div>
+      <div class="chart-wrap" style="height:200px;"><canvas id="laChart" role="img" aria-label="Lebenszufriedenheit">Hockey 3.86, Leben 3.92, Gesamt 3.89</canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-box">
+    <div class="chart-title">Zeitaufwand × Hockey-Zufriedenheit (stärkste Korrelation)</div>
+    <div style="display:flex; align-items:center; gap: 16px; padding: 8px 0;">
+      <div style="font-size:36px;font-weight:500;color:#3266ad;">r = .50</div>
+      <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.5;">Wer mehr Zeit ins Hockey investiert, ist mit dem Hockey deutlich zufriedener. Dies ist die stärkste gefundene Korrelation im Datensatz.</div>
+    </div>
+  </div>
+</div>
+
+<div id="panel-gruppenvergleich" class="panel">
+  <div class="section-title">Nationalteam-Zugehörigkeit</div>
+  <div class="chart-row">
+    <div class="chart-box">
+      <div class="chart-title">Lebenszufriedenheit gesamt</div>
+      <div class="bar-row"><div class="bar-label">A-Kader</div><div class="bar-track"><div class="bar-fill" style="width:88%;background:#3266ad;"></div></div><div class="bar-val">4,39</div></div>
+      <div class="bar-row"><div class="bar-label">Nachwuchs</div><div class="bar-track"><div class="bar-fill" style="width:82%;background:#6697d4;"></div></div><div class="bar-val">4,12</div></div>
+      <div class="bar-row"><div class="bar-label">Kein Nationalteam</div><div class="bar-track"><div class="bar-fill" style="width:76%;background:#9abde2;"></div></div><div class="bar-val">3,78</div></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">WHOQOL-Gesamt (WH12)</div>
+      <div class="bar-row"><div class="bar-label">Kein Nationalteam</div><div class="bar-track"><div class="bar-fill" style="width:78%;background:#3266ad;"></div></div><div class="bar-val">79,1</div></div>
+      <div class="bar-row"><div class="bar-label">A-Kader</div><div class="bar-track"><div class="bar-fill" style="width:75%;background:#6697d4;"></div></div><div class="bar-val">76,0</div></div>
+      <div class="bar-row"><div class="bar-label">Nachwuchs</div><div class="bar-track"><div class="bar-fill" style="width:66%;background:#d85a30;"></div></div><div class="bar-val">67,3</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Spielniveau</div>
+  <div class="chart-row">
+    <div class="chart-box">
+      <div class="chart-title">Hockey-Zufriedenheit</div>
+      <div class="bar-row"><div class="bar-label">1. Bundesliga</div><div class="bar-track"><div class="bar-fill" style="width:87%;background:#3266ad;"></div></div><div class="bar-val">4,34</div></div>
+      <div class="bar-row"><div class="bar-label">2. Bundesliga</div><div class="bar-track"><div class="bar-fill" style="width:73%;background:#6697d4;"></div></div><div class="bar-val">3,66</div></div>
+      <div class="bar-row"><div class="bar-label">keine Meisterschaft</div><div class="bar-track"><div class="bar-fill" style="width:70%;background:#9abde2;"></div></div><div class="bar-val">3,49</div></div>
+      <div class="bar-row"><div class="bar-label">3. Liga</div><div class="bar-track"><div class="bar-fill" style="width:67%;background:#9abde2;"></div></div><div class="bar-val">3,33</div></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Zeitaufwand gesamt (Std./Woche)</div>
+      <div class="bar-row"><div class="bar-label">1. Bundesliga</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:#3266ad;"></div></div><div class="bar-val">11,9</div></div>
+      <div class="bar-row"><div class="bar-label">2. Bundesliga</div><div class="bar-track"><div class="bar-fill" style="width:73%;background:#6697d4;"></div></div><div class="bar-val">8,7</div></div>
+      <div class="bar-row"><div class="bar-label">keine Meisterschaft</div><div class="bar-track"><div class="bar-fill" style="width:62%;background:#9abde2;"></div></div><div class="bar-val">7,3</div></div>
+      <div class="bar-row"><div class="bar-label">3. Liga</div><div class="bar-track"><div class="bar-fill" style="width:48%;background:#9abde2;"></div></div><div class="bar-val">5,8</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Geschlechterunterschiede</div>
+  <div class="chart-box">
+    <div class="chart-wrap" style="height:200px;"><canvas id="genderChart" role="img" aria-label="Geschlechterunterschiede">BFOMO männlich 1.86 weiblich 2.46, LA männlich 3.77 weiblich 4.03, RAI männlich 9.45 weiblich 8.81, WH12 männlich 79.7 weiblich 74.6</canvas></div>
+  </div>
+</div>
+
+<div id="panel-fazit" class="panel">
+  <div class="section-title">Kernbefunde & Fazit</div>
+  <div class="fazit">
+    <div class="fazit-item"><i class="ti ti-star fazit-icon" aria-hidden="true"></i><div><strong>Hohe intrinsische Motivation:</strong> Österreichische Hockeyspieler/innen sind überwiegend autonom motiviert (ES-RAI Ø = 9,15). Identified Regulation (5,68) und Intrinsic Motivation (5,35) dominieren — ein gesundes Motivationsprofil. <span class="badge ok">positiv</span></div></div>
+    <div class="fazit-item"><i class="ti ti-heart fazit-icon" aria-hidden="true"></i><div><strong>Gute Lebensqualität:</strong> WHOQOL-Gesamtwert von Ø 77,3/100, die Umwelt-Domäne (86,0) ist besonders stark. Lebenszufriedenheit (Ø 3,89/5) liegt deutlich über dem Mittelpunkt. <span class="badge ok">positiv</span></div></div>
+    <div class="fazit-item"><i class="ti ti-clock fazit-icon" aria-hidden="true"></i><div><strong>Zeit = Zufriedenheit im Hockey:</strong> Stärkste Korrelation im Datensatz: Mehr Zeitaufwand ↔ höhere Hockey-Zufriedenheit (r = .50). 1.-Bundesliga-Spieler/innen investieren fast doppelt so viele Stunden wie 3.-Liga-Spieler/innen und sind deutlich zufriedener. <span class="badge ok">konsistent</span></div></div>
+    <div class="fazit-item"><i class="ti ti-alert-triangle fazit-icon" aria-hidden="true"></i><div><strong>FOMO belastet Wohlbefinden:</strong> Fear of Missing Out korreliert negativ mit Lebensqualität (r = −.40) und autonomer Motivation (r = −.29) und positiv mit Autonomie-Frustration (r = +.40). Höherer Zeitaufwand geht auch mit mehr FOMO einher (r = .34). <span class="badge warn">Risikofaktor</span></div></div>
+    <div class="fazit-item"><i class="ti ti-users fazit-icon" aria-hidden="true"></i><div><strong>Nachwuchs-Nationalteam unter Druck:</strong> Nachwuchsspieler/innen zeigen trotz hoher Leistungsbereitschaft den niedrigsten WHOQOL-Wert (67,3) und höchste BFOMO-Werte (2,74) aller Gruppen — möglicher Hinweis auf psychischen Belastungsdruck. <span class="badge warn">zu beobachten</span></div></div>
+    <div class="fazit-item"><i class="ti ti-gender-bigender fazit-icon" aria-hidden="true"></i><div><strong>Geschlechterunterschiede vorhanden:</strong> Frauen zeigen mehr FOMO (2,46 vs. 1,86) und leicht höhere Lebenszufriedenheit (4,03 vs. 3,77), während Männer höhere WHOQOL-Werte (79,7 vs. 74,6) aufweisen. Unterschiede moderat, nicht dramatisch. <span class="badge">differenziert</span></div></div>
+    <div class="fazit-item"><i class="ti ti-school fazit-icon" aria-hidden="true"></i><div><strong>Hoher Bildungsstand:</strong> 40% haben Hochschulabschluss, weitere 26% Matura. Starke Studierenden-Dominanz (47 Personen) passt zum jungen Altersdurchschnitt (Median 23 Jahre). <span class="badge">deskriptiv</span></div></div>
+  </div>
+  <div style="font-size:12px;color:var(--color-text-tertiary);margin-top:8px;">Hinweis: Korrelationen zeigen Zusammenhänge, keine Kausalität. Für inferenzstatistische Aussagen wären t-Tests, ANOVA oder Regressionsanalysen erforderlich.</div>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[onclick="showTab(\''+name+'\')"]').classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const textColor = isDark ? '#ccc' : '#666';
+const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
+const baseOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
+
+new Chart(document.getElementById('ageChart'), {
+  type: 'bar',
+  data: {
+    labels: ['unter 18','18–25','26–35','36–45','46+'],
+    datasets: [{ data: [44,81,40,17,34], backgroundColor: ['#9abde2','#3266ad','#6697d4','#9abde2','#c4d9ee'], borderRadius: 4, borderSkipped: false }]
+  },
+  options: { ...baseOpts, scales: { x: { ticks: { color: textColor, font:{size:11} }, grid:{color:gridColor} }, y: { ticks: { color: textColor, font:{size:11} }, grid:{color:gridColor} } } }
+});
+
+new Chart(document.getElementById('niveauChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['1. Bundesliga','2. Bundesliga','3. Liga','keine Meisterschaft'],
+    datasets: [{ data: [88,71,39,18], backgroundColor: ['#185FA5','#3266ad','#6697d4','#9abde2'], borderWidth: 0 }]
+  },
+  options: { ...baseOpts, cutout: '60%', plugins: { legend: { display: true, position:'right', labels:{color: textColor, font:{size:11}, boxWidth:12} } } }
+});
+
+new Chart(document.getElementById('motivChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Amotivation','External Reg.','Introjected','Identified','Intrinsic Mot.'],
+    datasets: [{ data: [2.55,1.60,4.03,5.68,5.35], backgroundColor: ['#d85a30','#e89878','#9abde2','#3266ad','#185FA5'], borderRadius: 4, borderSkipped: false }]
+  },
+  options: { ...baseOpts, scales: { x: { ticks:{color:textColor,font:{size:10}}, grid:{color:gridColor} }, y: { min:0, max:7, ticks:{color:textColor,font:{size:11}}, grid:{color:gridColor} } } }
+});
+
+new Chart(document.getElementById('bnChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Autonomy','Competence','Relatedness'],
+    datasets: [
+      { label:'Satisfaction', data:[4.73,5.35,5.65], backgroundColor:'#3266ad', borderRadius:4, borderSkipped:false },
+      { label:'Frustration', data:[3.61,1.81,1.68], backgroundColor:'#d85a30', borderRadius:4, borderSkipped:false }
+    ]
+  },
+  options: { ...baseOpts, plugins:{legend:{display:false}}, scales: { x:{ticks:{color:textColor,font:{size:11}},grid:{color:gridColor}}, y:{min:0,max:7,ticks:{color:textColor,font:{size:11}},grid:{color:gridColor}} } }
+});
+
+new Chart(document.getElementById('whoChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Physisch','Psychologisch','Soziale Bez.','Umwelt'],
+    datasets: [{ data:[79.13,74.48,75.46,85.97], backgroundColor:['#3266ad','#6697d4','#6697d4','#185FA5'], borderRadius:4, borderSkipped:false }]
+  },
+  options: { ...baseOpts, scales: { x:{ticks:{color:textColor,font:{size:11}},grid:{color:gridColor}}, y:{min:0,max:100,ticks:{color:textColor,font:{size:11}},grid:{color:gridColor}} } }
+});
+
+new Chart(document.getElementById('laChart'), {
+  type: 'bar',
+  data: {
+    labels: ['LA Hockey','LA Leben','LA Gesamt'],
+    datasets: [{ data:[3.86,3.92,3.89], backgroundColor:['#6697d4','#3266ad','#185FA5'], borderRadius:4, borderSkipped:false }]
+  },
+  options: { ...baseOpts, scales: { x:{ticks:{color:textColor,font:{size:11}},grid:{color:gridColor}}, y:{min:1,max:5,ticks:{color:textColor,font:{size:11}},grid:{color:gridColor}} } }
+});
+
+new Chart(document.getElementById('genderChart'), {
+  type: 'bar',
+  data: {
+    labels: ['BFOMO (×1)','LA Gesamt','WH12 (÷20)'],
+    datasets: [
+      { label:'Männlich', data:[1.86,3.77,3.99], backgroundColor:'#3266ad', borderRadius:4, borderSkipped:false },
+      { label:'Weiblich', data:[2.46,4.03,3.73], backgroundColor:'#e89878', borderRadius:4, borderSkipped:false }
+    ]
+  },
+  options: { ...baseOpts, plugins:{legend:{display:true,labels:{color:textColor,font:{size:11},boxWidth:12}}}, scales:{ x:{ticks:{color:textColor,font:{size:11}},grid:{color:gridColor}}, y:{min:0,max:5,ticks:{color:textColor,font:{size:11}},grid:{color:gridColor}} } }
+});
+</script>
